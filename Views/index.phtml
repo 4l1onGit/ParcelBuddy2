@@ -1,0 +1,134 @@
+<?php require_once('Views/Template/header.phtml'); ?>
+<div class="container-fluid d-inline-block my-4 mx-auto">
+    <div class="row bg-dark">
+        <div class='container col-md-2 col-sm-12 bg-dark'>
+            <h4 class="pt-2 text-center">Filters</h4>
+            <?php require_once('Views/Template/filters.phtml'); ?>
+        </div>
+        <!-- Markup to display table when using screens >= 768px -->
+        <div class="col-md-10 mx-auto d-none d-sm-block">
+            <table class='table table-dark table-hover fixed-table-body'>
+                <thead>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>Deliverer</th>
+                    <th>[Lat, Lng]</th>
+                    <th>Status</th>
+                    <th>Photo</th>
+                </thead>
+                <tbody class="text-white">
+                    <?php /** @var $view */
+                    /**
+                     * @param $deliveryData
+                     * @return void
+                     */
+                    function deliveryPointTable($deliveryData) //Table function for desktop
+                    {
+                        echo '<tr><td>' . $deliveryData->getId() . '</td><td>' . $deliveryData->getName() . '</td> <td>' . $deliveryData->getAddressOne() . ' ' . $deliveryData->getAddressTwo() . ' <strong>(Postcode: '. $deliveryData->getPostcode() . ')</strong></td> <td> ' . $deliveryData->getUsername() . '</td> <td>(' . $deliveryData->getLat() . ', ' . $deliveryData->getLng() . ')</td><td>' . $deliveryData->getStatusText() . '</td><td>' . "<img src='Images/" . $deliveryData->getDelPhoto() . "' height='75px' width='75px'>" . '</td></tr>';
+                    }
+
+                    if (isset($view->filteredDeliveryDataSet)) { //Records in array looped through to show all stored filtered records
+                        foreach ($view->filteredDeliveryDataSet as $deliveryData) {
+
+                            deliveryPointTable($deliveryData);
+                        }
+                    } elseif (isset($view->deliveryDataSet)) //Records in array to show all records
+                        foreach ($view->deliveryDataSet as $deliveryData) {
+
+                            deliveryPointTable($deliveryData);
+                        }
+
+                    ?>
+                </tbody>
+            </table>
+        </div>
+        <!-- Markup to display table when using screens (mobile) < 768px -->
+        <div class="col-sm-12 mx-auto d-md-none bg-dark bg-opacity-75">
+            <?php
+/**
+ * @param $deliveryData
+ * @return void
+ */
+function getTable($deliveryData) //Table function for mobile view
+{
+    echo "
+    <div class='row my-2'>
+        <div class='col-9 bg-dark border border-white '>
+            <label>Name: " . $deliveryData->getName() . "</label>
+            <label>Address: " . $deliveryData->getAddressOne() . ' ' . $deliveryData->getAddressTwo() . ' ' . $deliveryData->getPostcode() . "</label>
+            <label>Location: (" . $deliveryData->getLat() . ',' . $deliveryData->getLng() . ")</label>
+            <label>Deliverer: " . $deliveryData->getUsername() . "</label>
+        </div>
+        <div class='d-flex col-3 bg-dark border border-white justify-content-center align-items-center'>
+            " . (strtolower($deliveryData->getStatusText()) === 'delivered' ? "<img src='Images/" . $deliveryData->getDelPhoto() . "' height='50px' width='50px'>" : "<label>" . $deliveryData->getStatusText() . "</label>") . "
+        </div>
+    </div>";
+}
+
+if(isset($view->filteredDeliveryDataSet)) {
+                foreach ($view->filteredDeliveryDataSet as $deliveryData) {
+                    getTable($deliveryData);
+            } }
+            elseif(isset($view->deliveryDataSet)) {
+                foreach ($view->deliveryDataSet as $deliveryData) {
+                    getTable($deliveryData);
+                } }
+            ?>
+        </div>
+    </div>
+</div>
+<nav aria-label="Page navigation">
+
+    <ul class="pagination justify-content-center">
+        <?php
+
+        if ($view->pageCount > 1) {
+            if ($view->currentPage > 1) {
+                echo '<li class="page-item"><a class="page-link" href="?page=' . $view->currentPage - 1 . '">Prev</a></li>';
+            }
+            if ($view->pageCount < 5) {
+                for ($x = 1; $x <= $view->pageCount; $x++) {
+                    echo '<li class="page-item"><a class="page-link" href="?page=' . $x . '">' . $x . '</a></li>';
+                }
+            } else {
+                for ($x = 1; $x <= 5; $x++) {
+                    echo '<li class="page-item"><a class="page-link" href="?page=' . $x . '">' . $x . '</a></li>';
+                }
+                echo '<li class="page-item"><a class="page-link" href="?page=' . $view->pageCount . '">' . $view->pageCount . '</a></li>';
+            }
+            if ($view->currentPage < $view->pageCount) {
+                echo '<li class="page-item"><a class="page-link" href="?page=' . $view->currentPage + 1 . '">Next</a></li>';
+            }
+        }
+        ; ?>
+    </ul>
+
+</nav>
+<?php if ($view->errors > 0) { ?>
+    <div class="row">
+        <div class="col-3 mx-auto">
+
+
+            <?php foreach ($view->errors as $error) { //Loops through all errors to display ?>
+
+                <div class="text-center alert alert-warning col-12" role="alert">
+                    <p>
+                        <?php echo $error ?>
+                    </p>
+                </div>
+            <?php } ?>
+
+        </div>
+    </div>
+    <?php }
+?>
+
+
+<div class="d-flex col-1 justify-content-center mx-auto">
+    <?php echo '<p class="bg-dark rounded-1 p-1 my-auto">Current Page: ' . $view->currentPage . '</p>'; ?>
+</div>
+
+
+
+<?php require_once('Views/Template/footer.phtml'); ?>

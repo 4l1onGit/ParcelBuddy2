@@ -1,0 +1,117 @@
+<form method="post">
+    <div class='row p-2'>
+        <div class="form-check py-2 col-12">
+            <label class="form-check-label" for="id">
+                ID
+            </label>
+            <div class="col-11">
+                <input type="number" class="form-control" id="id" name="pointIDInput" placeholder="Search ID"
+                    aria-label="Recipient's username" aria-describedby="button-addon2">
+            </div>
+
+        </div>
+        <div class="form-check py-2 col-12">
+            <label class="form-check-label" for="name">
+                Name
+            </label>
+            <div class="col-11">
+                <input type="text" class="form-control" id="name" name="nameInput" placeholder="Search Name"
+                    aria-label="Recipient's username" aria-describedby="button-addon2">
+            </div>
+
+        </div>
+        <div class="form-check py-2 col-12">
+            <label class="form-check-label" for="postcode">
+                Postcode
+            </label>
+
+            <div class="col-11">
+                <input type="text" class="form-control" id="postcode" name="postcodeInput" placeholder="Search Postcode"
+                       aria-label="Recipient's username" aria-describedby="button-addon2">
+            </div>
+        </div>
+        <div class="form-check py-2 col-12">
+            <label class="form-check-label" for="addressOne">
+                Address One
+            </label>
+
+            <div class="col-11">
+                <input type="text" class="form-control" id="addressOne" name="addressOneInput" placeholder="Search Address One"
+                       aria-label="Recipient's username" aria-describedby="button-addon2">
+            </div>
+        </div>
+        <div class="form-check py-2 col-12">
+            <label class="form-check-label" for="addressTwo">
+                Address Two
+            </label>
+
+            <div class="col-11">
+                <input type="text" class="form-control" id="addressTwo" name="addressTwoInput" placeholder="Search Address Two"
+                    aria-label="Recipient's username" aria-describedby="button-addon2">
+            </div>
+        </div>
+        <?php if(strtolower($_SESSION['login']->getUserType()) === 'manager') { ?>
+
+        <div class="form-check py-2 col-12">
+            <label class="form-check-label" for="deliverer">
+                Deliverer
+            </label>
+
+            <div class="col-11">
+                <select id="inputDeliverer" class="form-select" name='delivererInput'>
+                    <option selected value="">Choose...</option>
+                    <?php /** @var $view */
+                    foreach ($view->userDataSet as $userData) {
+                        echo "<option value='" . $userData->getUserID() . "'>" . $userData->getUsername() . "</option>"; //Fetches all users in the database to assign to delivery
+                    }                    ?>
+
+                </select>
+            </div>
+        </div>
+
+
+        <?php }  ?>
+
+
+        <div class="form-check py-2 col-12">
+            <label class="form-check-label" for="lat">
+                Lat
+            </label>
+
+            <div class="col-11">
+                <input type="number" class="form-control" id="lat" name="latInput" placeholder="Search Lat"
+                    aria-label="Recipient's username" step="any" aria-describedby="button-addon2">
+            </div>
+        </div>
+        <div class="form-check py-2 col-12">
+            <label class="form-check-label" for="lng">
+                Lng
+            </label>
+
+            <div class="col-11">
+                <input type="number" class="form-control" name="lngInput" placeholder="Search Lng"
+                    aria-label="Recipient's username" id="lng" step="any" aria-describedby="button-addon2">
+            </div>
+        </div>
+        <div class="form-check py-2 col-12">
+            <label class="form-check-label" for="status">
+                Status
+            </label>
+
+            <div class="col-11">
+                <select id="status" class="form-select" name='statusInput'>
+                    <option selected value="">Choose...</option>
+                    <?php /** @var $view */
+                    foreach ($view->statusDataSet as $statusData) {
+                        echo "<option value='" . $statusData->getStatusCode() . "'>" . $statusData->getStatusText() . "</option>"; //Fetches all users in the database to assign to delivery
+                    }
+                    ?>
+                </select>
+            </div>
+        </div>
+        <div class="input-group py-2 col-12">
+            <button class="btn btn-success mx-auto px-5" name="filterButton" type="submit"
+                id="filterButton">Search</button>
+        </div>
+    </div>
+</form>

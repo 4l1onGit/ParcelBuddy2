@@ -1,0 +1,211 @@
+<?php require_once("./Views/Template/header.phtml"); ?>
+
+
+<div class='container-fluid'>
+    <h2 class='pb-4 text-center'>Welcome Manager:
+        <?php echo $_SESSION["login"]->getUsername(); //Gets the name of the user stored in the session ?>
+    </h2>
+    <div class='row'>
+        <div class='col-lg-4'>
+            <form class="row bg-dark p-4 m-1" method='post'>
+                <div class="col-lg-12 pb-2">
+                    <h4>Create Delivery Point</h4>
+                </div>
+
+                <div class="col-lg-6 pb-2">
+                    <label for="inputName" class="form-label">Delivery Name</label>
+                    <input type="text" class="form-control" id="inputName" name='inputName'>
+                </div>
+                <div class="col-lg-6 pb-2">
+                    <label for="inputDeliverer" class="form-label">Deliverer</label>
+                    <select id="inputDeliverer" class="form-select" name='inputDeliverer'>
+                        <option selected>Choose...</option>
+                        <?php foreach ($view->userDataSet as $userData) {
+                            echo "<option value='" . $userData->getUserID() . "'>" . $userData->getUsername() . "</option>"; //Fetches all users in the database to assign to delivery
+                        }
+                        ?>
+
+                    </select>
+                </div>
+                <div class="col-lg-6 pb-2">
+                    <label for="inputAddress" class="form-label">Address</label>
+                    <input type="text" class="form-control" id="inputAddress" name='inputAddress'
+                        placeholder="1234 Main St">
+                </div>
+                <div class="col-lg-6 pb-2">
+                    <label for="inputAddress2" class="form-label">Address 2</label>
+                    <input type="text" class="form-control" id="inputAddress2" name='inputAddress2'
+                        placeholder="Apartment, studio, or floor">
+                </div>
+
+                <div class="col-4 pb-2">
+                    <label for="inputLat" class="form-label">Lat</label>
+                    <input type="number" class="form-control" id="inputLat" name='inputLat'>
+                </div>
+
+                <div class="col-4 pb-2">
+                    <label for="inputLng" class="form-label">Lng</label>
+                    <input type="number" class="form-control" id="inputLng" name='inputLng'>
+                </div>
+                <div class="col-4 pb-4">
+                    <label for="inputPostcode" class="form-label">Postcode</label>
+                    <input type="text" class="form-control" id="inputPostcode" name='inputPostcode'>
+                </div>
+
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary" name='createPoint'>Create Point</button>
+                </div>
+            </form>
+        </div>
+
+        <div class='col-lg-4'>
+            <form class="row bg-dark p-4 m-1" method="post">
+                <div class="col-lg-6 pb-2">
+                    <h4>Update Delivery Point</h4>
+                </div>
+                <div class="col-lg-6 pb-2">
+                    <select id="inputDeliveryPoint" name="inputID" class="form-select">
+                        <option selected>Delivery Point</option>
+                        <?php foreach ($view->deliveryDataSet as $deliveryData) {
+                            echo "<option>" . $deliveryData->getId() . "</option>"; //Fetches all users in the database to assign to delivery
+                        }
+                        ?>
+
+                    </select>
+                </div>
+                <div class="col-lg-6 pb-2">
+                    <label for="inputName"  class="form-label">Delivery Name</label>
+                    <input type="text" name="inputName"  class="form-control" id="inputName">
+                </div>
+                <div class="col-lg-6 pb-2">
+                    <label for="inputDeliverer" class="form-label">Deliverer</label>
+                    <select id="inputDeliverer" name="inputDeliverer"  class="form-select">
+                        <option selected value="">Choose...</option>
+                        <?php foreach ($view->userDataSet as $userData) {
+                            echo "<option value='" . $userData->getUserID() . "'>" . $userData->getUsername() . "</option>"; //Fetches all users in the database to assign to delivery
+                        }
+                        ?>
+
+                    </select>
+                </div>
+                <div class="col-lg-6 pb-2">
+                    <label for="inputAddress" class="form-label">Address</label>
+                    <input type="text" class="form-control" name="inputAddress"  id="inputAddress" placeholder="1234 Main St">
+                </div>
+                <div class="col-lg-6 pb-2">
+                    <label for="inputAddress2" class="form-label">Address 2</label>
+                    <input type="text" class="form-control" name="inputAddress2"  id="inputAddress2"
+                        placeholder="Apartment, studio, or floor">
+                </div>
+
+                <div class="col-4 pb-2">
+                    <label for="inputLat" class="form-label">Lat</label>
+                    <input type="number" name="inputLat"  class="form-control" id="inputLat">
+                </div>
+
+                <div class="col-4 pb-2">
+                    <label for="inputLng" class="form-label">Lng</label>
+                    <input type="number"  name="inputLng"  class="form-control" id="inputLng">
+                </div>
+                <div class="col-4 pb-4">
+                    <label for="inputPostcode" class="form-label">Postcode</label>
+                    <input type="text" name="inputPostcode"  class="form-control" id="inputPostcode">
+                </div>
+                <div class="col-6 pb-4">
+                    <label for="inputStatus" class="form-label">Status</label>
+                    <select id="status" class="form-select" name='statusInput'>
+                        <option selected value="">Choose...</option>
+                        <?php /** @var $view */
+                        foreach ($view->statusDataSet as $statusData) {
+                            echo "<option value='" . $statusData->getStatusCode() . "'>" . $statusData->getStatusText() . "</option>"; //Fetches all users in the database to assign to delivery
+                        }
+                        ?>
+                    </select>
+                </div>
+                <div class="col-6 pb-4">
+                    <label for="inputDel_Photo" class="form-label">Del_Photo</label>
+                    <input type="text" name="inputDel_Photo"  class="form-control" id="inputDel_Photo" disabled>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary" name='updatePoint'>Update Point</button>
+                </div>
+            </form>
+        </div>
+        <div class='col-lg-4'>
+            <form class="row bg-dark p-4 m-1" method="post">
+                <div class="col-12 pb-2">
+                    <h4>Create User</h4>
+                </div>
+                <div class="col-lg-4 pb-2">
+                    <label for="inputName" class="form-label">Name</label>
+                    <input type="text" class="form-control" name="inputName" id="inputName" placeholder="Bob Anderson">
+                </div>
+                <div class="col-lg-4  pb-2">
+                    <label for="inputPassword" class="form-label">Password</label>
+                    <input type="password" name="inputPassword" class="form-control" id="inputPassword">
+                </div>
+                <div class="col-lg-4  pb-4">
+                    <label for="inputUserType" class="form-label">Role</label>
+                    <select id="inputUserType" name="inputUserType" class="form-select">
+                        <option selected>Choose Role...</option>
+                        <?php foreach ($view->userTypeDataSet as $userType) {
+                            echo "<option value='".$userType->getStatusID() ."'>" . $userType->getStatusCode() . "</option>"; //Fetches all users in the database to assign to delivery
+                        }
+                        ?>
+
+                    </select>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary" name='createUser'>Create User</button>
+                </div>
+
+            </form>
+            <form class="row bg-dark p-4 m-1 my-2" method='post'>
+
+                <div class="col-lg-6 pb-2">
+                    <h4>Delete Delivery</h4>
+                </div>
+                <div class="col-lg-6 pb-4">
+                    <select id="inputDeliverer" name='inputDeliveryID' class="form-select">
+                        <option selected>Choose Delivery...</option>
+                        <?php foreach ($view->deliveryDataSet as $deliveryData) {
+                            echo "<option value='" . $deliveryData->getId() . "'>" . $deliveryData->getId() . "</option>"; //Fetches all users in the database to assign to delivery
+                        }
+                        ?>
+
+                    </select>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary" name='deletePoint' value='deletePoint'>Delete
+                        Delivery</button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+    <div class="row">
+    <?php if ($view->errors > 0) { ?>
+
+        <div class="col-3 mx-auto">
+            <?php foreach ($view->errors as $error) { ?>
+
+                <div class="text-center alert alert-warning col-12" role="alert">
+                    <p>
+                        <?php echo $error ?>
+                    </p>
+                </div>
+            <?php } ?>
+
+        </div>
+
+        <?php }
+        ?>
+    </div>
+
+</div>
+
+
+
+<?php require_once("./Views/Template/footer.phtml"); ?>

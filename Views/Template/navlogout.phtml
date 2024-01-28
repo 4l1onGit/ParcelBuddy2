@@ -1,0 +1,12 @@
+<li class="nav-item">
+    <button class="btn btn-dark " data-bs-toggle="dropdown" aria-expanded="false">
+        <strong>
+            <?php echo $_SESSION['login']->getUsername() ?>
+        </strong>
+
+    </button>
+
+    <form class="bg-dark p-4 rounded-2 dropdown-menu dropdown-menu-dark" method="post">
+        <button type="submit" class="btn btn-danger" id="logout" value="logout" name="logoutbutton">Sign Out</button>
+    </form>
+</li>
