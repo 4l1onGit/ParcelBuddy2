@@ -1,7 +1,7 @@
 <?php
 require_once('UserData.php');
 require_once('DeliveryStatusType.php');
-class DeliveryPoint extends DeliveryStatusType //This class is a model for the delivery points
+class DeliveryPoint extends DeliveryStatusType implements  JsonSerializable//This class is a model for the delivery points
 {
     protected $_id, $_name, $_addressOne, $_addressTwo, $_postcode, $_deliverer, $_lat, $_lng, $_status, $_delPhoto, $_statusText;
 
@@ -90,4 +90,8 @@ class DeliveryPoint extends DeliveryStatusType //This class is a model for the d
         return $this->_status;
     }
 
+    public function jsonSerialize() : array
+    {
+       return ['name' => $this->_name];
+    }
 }

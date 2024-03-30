@@ -4,11 +4,13 @@ require_once('./Models/DeliveryPointDataSet.php');
 require_once('./Models/DeliveryStatusTypeDataSet.php');
 require_once('./Models/UserDataSet.php');
 
+
 $view = new stdClass();
 $view->pageTitle = 'Home';
 
 $view->errors = [];
 $view->currentPage = $_GET['page'] ?? 1; //Sets page to current page number
+$view->selectedRecord = $_GET['record'];
 $view->pageCount = 0;
 $view->recordsPerPage = 10;
 
@@ -23,7 +25,6 @@ if (isset($_SESSION['login'])) {
         $userDataSet = new UserDataSet();
         $view->userDataSet = $userDataSet->fetchAllUsers();
     }
-
 
     if (isset($_POST['filterButton'])) { //If filter button is submitted the following code will run
         $data = [];
@@ -124,7 +125,6 @@ if (isset($_SESSION['login'])) {
         $view->offset = ($view->currentPage - 1) * $view->recordsPerPage;
         $view->deliveryDataSet = array_slice($view->deliveryDataSet, $view->offset, $view->recordsPerPage);
     }
-
     require_once('./Views/index.phtml');
 }
 else {

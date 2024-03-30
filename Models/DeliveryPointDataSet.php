@@ -164,6 +164,21 @@ class DeliveryPointDataSet //Used for handling DeliveryPoint data
         return $statement->execute(); // execute the PDO statement and returns boolean value to confirm success
     }
 
+
+
+    public function fetchSearchDeliveries(string $q) : array {
+        $q = "$q%";
+        $sqlQuery = 'SELECT * FROM delivery_point  INNER JOIN delivery_users ON delivery_point.Deliverer = delivery_users.UserID INNER JOIN delivery_status ON delivery_point.Status = delivery_status.status_code WHERE delivery_point.Name LIKE ?'; //prepare Sql query
+        $statement = $this->_dbHandle->prepare($sqlQuery);
+        $statement->bindValue(1, $q);
+        $statement->execute();
+        $dataSet = [];
+        while ($row = $statement->fetch()) {
+            $dataSet[] = new DeliveryPoint($row);
+        }
+        return $dataSet;
+    }
+
     public function fetchFilteredDeliveries(array $data, int $id = null) : array
     {
 
