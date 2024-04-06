@@ -1,23 +1,44 @@
 <?php require_once('Views/Template/header.phtml'); ?>
     <script src="/Js/OpenLayers-2.13.1/OpenLayers.js" type="text/javascript"></script>
     <script src="/Js/qrcodejs/qrcode.js" type="text/javascript"></script>
-    <script>
-        map = new OpenLayers.Map("map");
-        map.addLayer(new OpenLayers.Layer.OSM());
 
-        epsg4326 =  new OpenLayers.Projection("EPSG:4326"); //WGS 1984 projection
-        projectTo = map.getProjectionObject(); //The map projection (Spherical Mercator)
 
-    </script>
 <div class="container-fluid home-container">
     <div class="row p-2">
-        <div class="col-md-2 col-sm-12">
-            <div class="d-flex justify-content-center flex-column align-items-center">
-                <h4 class="p-2">Filters</h4>
-                <?php require_once('Views/Template/filters.phtml'); ?>
-            </div>
-        </div>
+<!--        <div class="col-md-2 col-sm-12">-->
+<!--            <div class="d-flex justify-content-center flex-column align-items-center">-->
+<!--                <h4 class="p-2">Filters</h4>-->
+<!--                --><?php //require_once('Views/Template/filters.phtml'); ?>
+<!--            </div>-->
+<!--        </div>-->
         <div class="col-md-6">
+            <nav aria-label="Page navigation">
+
+                <ul class="pagination">
+                    <?php
+
+                    /** @var $view */
+                    if ($view->pageCount > 1) {
+                        if ($view->currentPage > 1) {
+                            echo '<li class="page-item"><a class="page-link" href="?page=' . $view->currentPage - 1 . '">Prev</a></li>';
+                        }
+                        if ($view->pageCount < 5) {
+                            for ($x = 1; $x <= $view->pageCount; $x++) {
+                                echo '<li class="page-item"><a class="page-link" href="?page=' . $x . '">' . $x . '</a></li>';
+                            }
+                        } else {
+                            for ($x = 1; $x <= 5; $x++) {
+                                echo '<li class="page-item"><a class="page-link" href="?page=' . $x . '">' . $x . '</a></li>';
+                            }
+                            echo '<li class="page-item"><a class="page-link" href="?page=' . $view->pageCount . '">' . $view->pageCount . '</a></li>';
+                        }
+                        if ($view->currentPage < $view->pageCount) {
+                            echo '<li class="page-item"><a class="page-link" href="?page=' . $view->currentPage + 1 . '">Next</a></li>';
+                        }
+                    }
+                    ; ?>
+                </ul>
+            </nav>
             <table class="table table-hover">
                 <thead>
                     <th>ID</th>
@@ -37,8 +58,8 @@
                     function deliveryPointTable($deliveryData) //Table function for desktop
                     {
                         $qrcode = "qrcode" . $deliveryData->getId();
-                        echo '<script>new QRCode(document.getElementById(qrcode), "http://jindo.dev.naver.com/collie");</script>';
-                        echo '<tr><td>' . $deliveryData->getId() . '</td><td>' . $deliveryData->getName() . '</td> <td>' . $deliveryData->getAddressOne() . ' ' . $deliveryData->getAddressTwo() . ' <br>Postcode: ' . $deliveryData->getPostcode() . '<br> Lat/Lng: ' . $deliveryData->getLat() . ', ' . $deliveryData->getLng() . '</td> <td> ' . $deliveryData->getUsername() . '</td> <td>' . $deliveryData->getStatusText() . '</td><td>' . "<img src='Images/" . $deliveryData->getDelPhoto() . "' height='75px' width='75px'>" . '</td> <td><div id="'. $qrcode . '"></div></td></tr>';
+                        echo '<tr><td>' . $deliveryData->getId() . '</td><td>' . $deliveryData->getName() . '</td> <td>' . $deliveryData->getAddressOne() . ' ' . $deliveryData->getAddressTwo() . ' <br>Postcode: ' . $deliveryData->getPostcode() . '<br> Lat/Lng: ' . $deliveryData->getLat() . ', ' . $deliveryData->getLng() . '</td> <td> ' . $deliveryData->getUsername() . '</td> <td>' . $deliveryData->getStatusText() . '</td><td>' . "<img src='Images/" . $deliveryData->getDelPhoto() . "' height='75px' width='75px'>" . '</td> <td><a class="" href="/record.php?id='. $deliveryData->getId() .'" id="'. $qrcode . '"></a></td></tr>';
+                        echo '<script>new QRCode(document.getElementById("'. $qrcode . '"), {text: "/record.php?id='. $deliveryData->getId() .'", width: 75, height: 75});</script>';
                     }
 
                     if (isset($view->filteredDeliveryDataSet)) { //Records in array looped through to show all stored filtered records
@@ -56,12 +77,22 @@
                 </tbody>
             </table>
         </div>
-        <div class="col-md-4">
-            <div id="map"  style="width:200px;height:200px;">
+        <div class="col-md-6 d-flex flex-column justify-content-center align-items-center">
+            <div class="" id="map"  style="width: 100%; height: 80%">
             </div>
         </div>
     </div>
 </div>
 
+    <script src="/Js/map.js" type="text/javascript"></script>
+<?php
+function deliveryPointMarkers($deliveryData) //Table function for desktop
+{
+    echo '<script>createLocation('. $deliveryData->getLat() .','. $deliveryData->getLng() .', "Name: '. $deliveryData->getName() .'" , "'. $deliveryData->getDelPhoto() .'"); </script>';
+}
+foreach ($view->deliveryDataSet as $deliveryData) {
 
+    deliveryPointMarkers($deliveryData);
+}
+?>
 <?php require_once('Views/Template/footer.phtml'); ?>

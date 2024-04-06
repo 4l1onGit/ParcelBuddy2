@@ -1,61 +1,21 @@
-<?php
-
-/** @var $view */
-?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Reliable delivery service">
+    <meta name="author" content="age419">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-
-    <link href="Styles/style.css" rel="stylesheet">
+          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link rel="stylesheet" href="Styles/style.css">
     <title>PB -
-        <?php echo $view->pageTitle; ?>
+        <?php /** @var $view */
+        echo $view->pageTitle; ?>
     </title>
 </head>
-<header class='header p-1'>
-    <nav class="d-flex flex-row justify-content-between p-2 px-4 m-0 navbar navbar-expand-lg navbar-light">
-        <div class="d-flex flex-row  align-items-center">
-            <div>
-                <a class="navbar-brand text-white fw-bolder" href="index.php"><i class="bi bi-house-fill"></i></a>
-                <button class="navbar-toggler" type="button" style="color:white;" data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-            </div>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav">
-                    <?php if (isset($_SESSION['login'])) {
-                        if (strtolower($_SESSION['login']->getUserType()) === 'manager') {
-                            echo '                    <li class="nav-item">
-                            <a class="nav-link text-white" href="dashboard.php">Dashboard</a>
-                        </li>';
-                        }
-                    }
-
-                    ?>
-                    <?php if (isset($_SESSION['login'])) {
-                        require_once('navlogout.phtml');
-                    } else {
-                        require_once('navlogin.phtml');
-                    } ?>
-                </ul>
-            </div>
-        </div>
-        <div class="row w-50">
-            <?php require_once('navsearch.phtml') ?>
-        </div>
-        <div class="">.</div>
-    </nav>
+<header class="header">
+    <?php require_once ('navbar.phtml'); ?>
 </header>
 
-<body class="d-flex flex-column b-4 min-vh-100 h-100" role="document">
-    <div class=''>
+<body class="px-4">

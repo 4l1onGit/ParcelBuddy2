@@ -10,7 +10,7 @@ $view->pageTitle = 'Home';
 
 $view->errors = [];
 $view->currentPage = $_GET['page'] ?? 1; //Sets page to current page number
-$view->selectedRecord = $_GET['record'];
+$view->selectedRecord = $_GET['record'] ?? null;
 $view->pageCount = 0;
 $view->recordsPerPage = 10;
 

@@ -1,26 +1,62 @@
-<li class="nav-item">
-    <button class="btn" data-bs-toggle="dropdown" aria-expanded="false">
-        Sign In
-    </button>
-    <form class="bg-dark p-4 rounded-2 dropdown-menu dropdown-menu-dark" method="post">
-        <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <input type="text" class="form-control" id="username" name="username">
-        </div>
-        <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" id="password" name="password">
-        </div>
-        <div class="mb-3">
-            <button type="submit" class="btn btn-primary" id="login" value="login" name="loginbutton">Submit</button>
-        </div>
-        <div class="form-check">
-            <input class="form-check-input" name="confirmLogin" type="checkbox" value="" id="confirmBox">
-            <label class="form-check-label" for="confirmBox">
-                Confirm
-            </label>
-        </div>
+<!--<li class="nav-item">-->
+<!--    <button class="btn" data-bs-toggle="dropdown" aria-expanded="false">-->
+<!--        Sign In-->
+<!--    </button>-->
+<!--    <form class="bg-dark p-4 rounded-2 dropdown-menu dropdown-menu-dark" method="post">-->
+<!--        <div class="mb-3">-->
+<!--            <label for="username" class="form-label">Username</label>-->
+<!--            <input type="text" class="form-control" id="username" name="username">-->
+<!--        </div>-->
+<!--        <div class="mb-3">-->
+<!--            <label for="password" class="form-label">Password</label>-->
+<!--            <input type="password" class="form-control" id="password" name="password">-->
+<!--        </div>-->
+<!--        <div class="mb-3">-->
+<!--            <button type="submit" class="btn btn-primary" id="login" value="login" name="loginbutton">Submit</button>-->
+<!--        </div>-->
+<!--        <div class="form-check">-->
+<!--            <input class="form-check-input" name="confirmLogin" type="checkbox" value="" id="confirmBox">-->
+<!--            <label class="form-check-label" for="confirmBox">-->
+<!--                Confirm-->
+<!--            </label>-->
+<!--        </div>-->
+<!---->
+<!---->
+<!--    </form>-->
+<!--</li>-->
 
-
-    </form>
-</li>
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    Sign In
+</button>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Login</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form class="modal-body p-4 rounded-2" method="post">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="username" name="username">
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password">
+                </div>
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-primary" id="login" value="login" name="loginbutton">Login</button>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" name="confirmLogin" type="checkbox" value="" id="confirmBox">
+                    <label class="form-check-label" for="confirmBox">
+                        Confirm
+                    </label>
+                </div>
+            </form>
+            <div class="modal-footer" method="post">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

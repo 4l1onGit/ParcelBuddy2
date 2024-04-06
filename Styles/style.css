@@ -1,81 +1,82 @@
+/* ---GENERAL--- */
 :root {
-  --colour-primary: #a3adff;
-  --colour-primary-dark: #8995ff;
-  --colour-primary-light: #c9cfff;
+  --colour-primary: #304d6d;
+  --colour-primary-dark: #1e3043;
+  --colour-primary-light: #4e7fb4;
+  --colour-secondary: #545e75;
+  --colour-tertiary: #63adf2;
 }
 
 body {
   margin: 0;
   padding: 0;
-  background-color: #d8d8d8;
+  background: rgba(var(--colour-tertiary), 0.3);
 }
 
-@keyframes bgAnimation {
-  0% {
-    background-position: 0 85%;
-  }
-  50% {
-    background-position: 100% 20%;
-  }
-  100% {
-    background-position: 0% 85%;
-  }
-}
-
-.pagination .page-link {
-  background: #212529;
-  color: white;
-}
-
-.home-container {
-  background-color: #fff;
-}
-
-.btn {
-  border-radius: 10px;
-  color: #fff;
-  letter-spacing: 0.1rem;
+/* ---COMPONENTS--- */
+.logo {
+  text-transform: uppercase;
   font-weight: 600;
-  transition: all 0.2s;
+  color: var(--colour-primary);
+}
+
+.logo-sub {
+  text-transform: uppercase;
+  font-weight: 300;
+  color: var(--colour-primary-light);
+}
+
+.button {
   border: none;
-}
-
-.filter-button:hover {
-  background-color: var(--colour-primary);
   color: #fff;
+  font-weight: 400;
+  font-size: 0.9rem;
+  border-radius: 5rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
-.filter-button {
-  background-color: var(--colour-primary-dark);
-}
-
-.btn:hover {
-  transform: scale(110%);
-}
-
-.btn:active {
-  transform: scale(90%);
-}
-
-.filter-button:active {
-  background-color: var(--colour-primary-light);
-}
-
-.header {
+.button--primary {
   background-color: var(--colour-primary);
 }
 
-.col {
-  border-right: 1rem;
-  border-right-color: #8995ff;
+.button--tertiary {
+  background-color: var(--colour-tertiary);
 }
 
-.search-box {
-  border-radius: 10rem;
+.button--search {
+  border-radius: 0 5rem 5rem 0;
 }
 
-.suggestions {
-  margin-top: 2.5rem;
-  width: 97.5%;
-  padding: 0;
+.search--input {
+  border-radius: 5rem 0 0 5rem;
+  transition: all 0.4s ease-in-out;
 }
+
+.search--input:focus::placeholder {
+  opacity: 0;
+}
+
+.search--icon {
+  transition: all 0.2s ease-in-out;
+  transform: translateY(-2px) translateX(-2px);
+}
+
+.search--icon:hover {
+  transform: translateY(-2px) scale(1.2);
+}
+
+.search--suggestions {
+  background-color: #e0e0e0;
+  width: 100%;
+  transform: translateY(4rem);
+  border-radius: 1rem;
+}
+
+/* ---PAGES--- */
+
+/* ---Home--- */
+
+/* ---Dashboard--- */

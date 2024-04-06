@@ -1,12 +1,37 @@
-<li class="nav-item">
-    <button class="btn text-white" data-bs-toggle="dropdown" aria-expanded="false">
-        <strong>
-            <?php echo $_SESSION['login']->getUsername() ?>
-        </strong>
+<!--<li class="nav-item">-->
+<!--    <button class="btn text-white" data-bs-toggle="dropdown" aria-expanded="false">-->
+<!--        <strong>-->
+<!--            --><?php //echo $_SESSION['login']->getUsername() ?>
+<!--        </strong>-->
+<!---->
+<!--    </button>-->
+<!---->
+<!--    <form class="bg-dark p-4 rounded-2 dropdown-menu dropdown-menu-dark" method="post">-->
+<!--        <button type="submit" class="btn btn-danger" id="logout" value="logout" name="logoutbutton">Sign Out</button>-->
+<!--    </form>-->
+<!--</li>-->
 
-    </button>
+<button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    <?php echo ucfirst($_SESSION['login']->getUsername()) ?>
+</button>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Logged In as <?php echo $_SESSION['login']->getUsername() ?></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 rounded-2">
+                <ul class="list-group">
+                    <li class="list-group-item">Username: <?php echo ucfirst($_SESSION['login']->getUsername()) ?></li>
+                    <li class="list-group-item">Role: <?php echo $_SESSION['login']->getUserType() ?></li>
 
-    <form class="bg-dark p-4 rounded-2 dropdown-menu dropdown-menu-dark" method="post">
-        <button type="submit" class="btn btn-danger" id="logout" value="logout" name="logoutbutton">Sign Out</button>
-    </form>
-</li>
+                </ul>
+            </div>
+            <form class="modal-footer" method="post">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-danger" id="logout" value="logout" name="logoutbutton">Sign Out</button>
+            </form>
+        </div>
+    </div>
+</div>

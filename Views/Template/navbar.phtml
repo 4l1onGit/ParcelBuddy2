@@ -1,1 +1,43 @@
-<?php
+
+<nav class="navbar navbar-expand-lg navbar-light justify-content-between border-bottom border-black">
+
+    <div class="logo-container d-flex flex-col">
+        <h2 class="logo">Parcel</h2>
+        <h6 class="logo-sub">Buddy</h6>
+    </div>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span
+            class="navbar-toggler-icon"></span></button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0 px-4">
+            <?php /** @var $view */
+            $links = array(['name' => 'Home', 'href' => '/'], ['name' => 'Contact', 'href' => '/contact.php'], ['name' => 'Dashboard', 'href' => '/dashboard.php'], ['name' => 'About', 'href' => '/about.php']);
+            foreach ($links as $link) { ?>
+                <?php echo '
+            <li class="nav-item text-uppercase fs-6 " id="' . $link['name'] . '"><a href="' . $link['href'] . ' " class="nav-link">' . $link['name'] . '</a></li>
+            ' ?>
+            <?php } ?>
+        </ul>
+
+        <form action="post" class="d-flex flex-column position-relative flex-fill">
+            <div class="d-flex input-group">
+                <input type="search" class="form-control search--input" placeholder="Search..." aria-label="Search" onkeyup="getSearch(this.value)">
+                <span><button class="button button--tertiary button--search"><svg xmlns="http://www.w3.org/2000/svg"
+                            width="16" height="16" fill="currentColor" class="bi bi-search search--icon"
+                            viewBox="0 0 16 16">
+                            <path
+                                d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+                        </svg></button></span>
+            </div>
+           <?php require_once ('search_suggestions.phtml'); ?>
+        </form>
+        <div class="px-2">
+            <?php if (isset($_SESSION['login'])) {
+                require_once('navlogout.phtml');
+            } else {
+                require_once('navlogin.phtml');
+            } ?>
+        </div>
+    </div>
+</nav>
