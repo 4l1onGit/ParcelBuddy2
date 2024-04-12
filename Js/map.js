@@ -1,6 +1,4 @@
 
-
-
     map = new OpenLayers.Map("map");
     map.addLayer(new OpenLayers.Layer.OSM());
     epsg4326 =  new OpenLayers.Projection("EPSG:4326"); //WGS 1984 projection
@@ -27,6 +25,8 @@ function createLocation(lat, long, description, imageURL){
 
     vectorLayer.addFeatures(feature);
 }
+
+
 
 //Selector control for pop up
 var controls = {

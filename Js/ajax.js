@@ -9,29 +9,26 @@ class AjaxController {
         if (search.length === 0) {
             uic.classList.remove("bg-white");
         } else {
-            let xmlhttp = new XMLHttpRequest();
-            xmlhttp.onreadystatechange = function () {
-                if (this.readyState === 4 && this.status === 200) {
-                    let searchSuggestions = JSON.parse(this.responseText);
+           fetch(`getSearch.php?q=${search}`, {method: "GET"}).then(async (res) => {
+               return JSON.parse(await res.text());
+            }).then((data) => {
+               let searchSuggestions = data;
 
-                    let suggestions = [];
+               let suggestions = [];
 
-                    uic.innerHTML = "";
-                    searchSuggestions.forEach((delivery) => {
-                        console.log(delivery);
-                        suggestions += delivery.name;
-                        uic.innerHTML +=
-                            "<li class='list-group-item'><a href='record.php?id=" +
-                            delivery.id +
-                            "'>" +
-                            delivery.name +
-                            "</a></li>";
-                    });
-                    uic.classList.add("bg-white");
-                }
-            };
-            xmlhttp.open("GET", "getSearch.php?q=" + search, true);
-            xmlhttp.send();
+               uic.innerHTML = "";
+               searchSuggestions.forEach((delivery) => {
+                   console.log(delivery);
+                   suggestions += delivery.name;
+                   uic.innerHTML +=
+                       "<li class='list-group-item'><a href='record.php?id=" +
+                       delivery.id +
+                       "'>" +
+                       delivery.name +
+                       "</a></li>";
+               });
+               uic.classList.add("bg-white");
+           })
         }
     }
 
@@ -42,10 +39,10 @@ class AjaxController {
         fetch('getDeliveries.php?q=deliveries&page=' + page, {method: 'GET'}).then(async (res) => {
             return JSON.parse(await res.text());
         }).then((data) => {
-
+            vectorLayer.removeAllFeatures();
             data.forEach((deliveryPoint) => {
-                uic.innerHTML += '<tr><td>' + deliveryPoint.id + '</td><td>' + deliveryPoint.name + '</td> <td>' + deliveryPoint.addressOne + ' ' + deliveryPoint.addressTwo + ' <br>Postcode: ' + deliveryPoint.postcode + '<br> Lat/Lng: ' + deliveryPoint.lat + ', ' + deliveryPoint.lng + '</td> <td> ' + deliveryPoint.username + '</td> <td>' + deliveryPoint.status + '</td><td>' + "<img src='Images/" + deliveryPoint.photo + "' height='75px' width='75px'>" + '</td> <td><a id="qrcode'+ deliveryPoint.id +'" href="/record.php?id=' + deliveryPoint.id + '"></a></td></tr>'
-
+                uic.innerHTML += `<tr onclick="set_position(${deliveryPoint.lat}, ${deliveryPoint.lng})"><td>${deliveryPoint.id}</td><td>${deliveryPoint.name}</td> <td>${deliveryPoint.addressOne}  ${deliveryPoint.addressTwo}<br>Postcode: ${deliveryPoint.postcode}<br> Lat/Lng: ${deliveryPoint.lat}, ${deliveryPoint.lng}</td> <td>${deliveryPoint.username}</td> <td>${deliveryPoint.status}</td><td><img src='Images/${deliveryPoint.photo}' height='75px' width='75px'></td> <td><a id='qrcode${deliveryPoint.id}' href=/record.php?id='${deliveryPoint.id}'></a></td></tr>`;
+                createLocation(deliveryPoint.lat, deliveryPoint.lng, `Name: ${deliveryPoint.name}`  , `${deliveryPoint.photo}`);
             })
             data.forEach((deliveryPoint) => {
                 try {
@@ -79,11 +76,11 @@ class AjaxController {
     }
 
     getMarkers() {
-        fetch("getDeliveries.php?q=markers", {method: 'GET'}).then(async (res) => {
+        fetch("getDeliveries.php?q=deliveries", {method: 'GET'}).then(async (res) => {
             return JSON.parse(await res.text());
         }).then((data) => {
             data.forEach((markersData) => {
-                //createLocation();
+                createLocation(markersData.lat, markersData.lng, `Name: ${markersData.name}`  , `${markersData.photo}`);
             })
         }).catch((err) => {
             console.log('Error: ' + err);
