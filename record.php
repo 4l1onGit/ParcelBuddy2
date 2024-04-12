@@ -7,5 +7,10 @@ require_once("./Models/UserTypeDataSet.php");
 require_once("./Models/DeliveryStatusTypeDataSet.php");
 
 
+$view = new stdClass();
+$view->pageTitle = 'Record';
+$view->recordID = $_GET['id'];
+
+
 require_once('./Views/record.phtml');
 

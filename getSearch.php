@@ -1,12 +1,16 @@
 <?php
 require_once('./Models/DeliveryPointDataSet.php');
+require_once('./Models/DeliveryStatusTypeDataSet.php');
+require_once('./Models/UserDataSet.php');
+require_once('authenticate.php');
 
 $q = $_REQUEST["q"];
-$currentPage = $_GET['searchPage'] ?? 1; //Sets page to current page number
+$currentPage = $_GET['page'] ?? 1; //Sets page to current page number
 $searchPage = 1;
 $searchResultPerPage = 10;
 
-if ($q !== "") {
+if ($q !== "" && isset($_SESSION['login'])) {
+
     $deliveryPointDataSet = new DeliveryPointDataSet();
     $deliveryPointData = $deliveryPointDataSet->fetchSearchDeliveries($q);
     $totalItems = count($deliveryPointData);

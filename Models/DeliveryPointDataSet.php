@@ -12,7 +12,7 @@ class DeliveryPointDataSet //Used for handling DeliveryPoint data
         $this->_dbHandle = $this->_dbInstance->getdbConnection();
     }
 
-    public function fetchAllDeliveries() : array
+    public function fetchAllDeliveries(): array
     {
         $sqlQuery = 'SELECT * FROM delivery_point INNER JOIN delivery_users ON delivery_point.Deliverer = delivery_users.UserID INNER JOIN delivery_status ON delivery_point.Status = delivery_status.status_code';
 
@@ -23,7 +23,7 @@ class DeliveryPointDataSet //Used for handling DeliveryPoint data
         while ($row = $statement->fetch()) {
             $dataSet[] = new DeliveryPoint($row);
         }
-        return $dataSet; //Returns the records (An array containing DeliverPoint objects)
+        return $dataSet; //Returns the records (An array containing DeliverPoint objects) now json encoded for ajax
     }
 
 
