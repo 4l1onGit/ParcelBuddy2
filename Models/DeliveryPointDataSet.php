@@ -293,4 +293,25 @@ class DeliveryPointDataSet //Used for handling DeliveryPoint data
 
     }
 
+    public function fetchDelivery(int $id) : array|false
+    {
+
+        $sqlQuery = 'SELECT * FROM delivery_point  INNER JOIN delivery_users ON delivery_point.Deliverer = delivery_users.UserID INNER JOIN delivery_status ON delivery_point.Status = delivery_status.status_code WHERE delivery_point.ID = ?';
+        $statement = $this->_dbHandle->prepare($sqlQuery); // prepare a PDO statement
+        $statement->bindParam(1, $id);
+        $dataSet = [];
+        $statement->execute();
+        try {
+            while ($row = $statement->fetch()) {
+                $dataSet[] = new DeliveryPoint($row); //Creates delivery point objects
+            }
+
+            return $dataSet; //Returns the delivery points
+        } catch (Exception $ex) {
+
+          return false;
+        }
+
+    }
+
 }

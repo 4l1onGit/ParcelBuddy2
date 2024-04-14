@@ -4,28 +4,7 @@
 
 <div class="container-fluid home-container">
     <div class="row py-4">
-
         <div class="col-md-6">
-
-
-                <div class="col-md-6">
-                    <div class="d-flex justify-content-center flex-column align-items-center">
-                        <div class="btn-group dropend">
-                            <button type="button" class="btn btn-secondary">
-                                Search
-                            </button>
-                            <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                                <span class="visually-hidden">Toggle Dropright</span>
-                            </button>
-                            <ul class="dropdown-menu">
-                                <!-- Dropdown menu links -->
-
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-
             <table class="table table-hover">
                 <thead>
                     <th>ID</th>
@@ -35,32 +14,9 @@
                     <th>Status</th>
                     <th>Photo</th>
                     <th>Code</th>
+                    <th>Edit</th>
                 </thead>
                 <tbody id="records">
-<!--                    --><?php ///** @var $view */
-//                    /**
-//                     * @param $deliveryData
-//                     * @return void
-//                     */
-//                    function deliveryPointTable($deliveryData) //Table function for desktop
-//                    {
-//                        $qrcode = "qrcode" . $deliveryData->getId();
-//                        echo '<tr><td>' . $deliveryData->getId() . '</td><td>' . $deliveryData->getName() . '</td> <td>' . $deliveryData->getAddressOne() . ' ' . $deliveryData->getAddressTwo() . ' <br>Postcode: ' . $deliveryData->getPostcode() . '<br> Lat/Lng: ' . $deliveryData->getLat() . ', ' . $deliveryData->getLng() . '</td> <td> ' . $deliveryData->getUsername() . '</td> <td>' . $deliveryData->getStatusText() . '</td><td>' . "<img src='Images/" . $deliveryData->getDelPhoto() . "' height='75px' width='75px'>" . '</td> <td><a class="" href="/record.php?id='. $deliveryData->getId() .'" id="'. $qrcode . '"></a></td></tr>';
-//                        echo '<script>new QRCode(document.getElementById("'. $qrcode . '"), {text: "/record.php?id='. $deliveryData->getId() .'", width: 75, height: 75});</script>';
-//                    }
-//
-//                    if (isset($view->filteredDeliveryDataSet)) { //Records in array looped through to show all stored filtered records
-//                        foreach ($view->filteredDeliveryDataSet as $deliveryData) {
-//
-//                            deliveryPointTable($deliveryData);
-//                        }
-//                    } elseif (isset($view->deliveryDataSet)) //Records in array to show all records
-//                        foreach ($view->deliveryDataSet as $deliveryData) {
-//
-//                            deliveryPointTable($deliveryData);
-//                        }
-//
-//                    ?>
                 <script>
                     window.addEventListener("load", (event) => {
                         ajaxController.getDeliveries();
@@ -75,7 +31,6 @@
             </div>
         </div>
         <nav aria-label="Page navigation" class="col-md-6">
-
             <ul class="pagination" id="page-nav">
 
             </ul>
@@ -84,18 +39,59 @@
 </div>
 
 
-<?php
-//function deliveryPointMarkers($deliveryData) //Table function for desktop
-//{
-//    echo '<script>
-//window.addEventListener("load", (event) => {
-//                        createLocation('. $deliveryData->getLat() .','. $deliveryData->getLng() .', "Name: '. $deliveryData->getName() .'" , "'. $deliveryData->getDelPhoto() .'");
-//                    })
-// </script>';
-//}
-//foreach ($view->deliveryDataSet as $deliveryData) {
-//
-//    deliveryPointMarkers($deliveryData);
-//}
-//?>
+    <div class="modal fade" id="recordModal" tabindex="-1" aria-labelledby="recordModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="form-label" id="recordID"></h4>
+                </div>
+                <div class="modal-body p-4 rounded-2">
+                    <div class="mb-3">
+                        <label for="recordName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="recordName" name="recordName">
+                    </div>
+                    <div class="mb-3">
+                        <label for="recordAddressOne" class="form-label">Address One</label>
+                        <input type="text" class="form-control" id="recordAddressOne" name="recordAddressOne">
+                    </div>
+                    <div class="mb-3">
+                        <label for="recordAddressTwo" class="form-label">Address Two</label>
+                        <input type="text" class="form-control" id="recordAddressTwo" name="recordAddressTwo">
+                    </div>
+                    <div class="mb-3">
+                        <label for="recordPostcode" class="form-label">Postcode</label>
+                        <input type="text" class="form-control" id="recordPostcode" name="recordPostcode">
+                    </div>
+                    <div class="mb-3">
+                        <label for="recordDeliverer" class="form-label">Deliverer</label>
+                        <select id="recordDeliverer" class="form-select" name='recordDeliverer'>
+
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="recordStatus" class="form-label">Status</label>
+                        <select class="form-select" id="recordStatus" name="recordStatus">
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="recordPhoto" class="form-label">Photo</label>
+                        <input type="file" class="form-control" id="recordPhoto" name="recordPhoto">
+                    </div>
+                    <div class="mb-3">
+                        <button class="btn btn-primary" id="edit" value="edit" name="editbutton" onclick="ajaxController.editRecord()">Edit</button>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" name="confirmEdit" type="checkbox" value="" id="confirmBox">
+                        <label class="form-check-label" for="confirmBox">
+                            Confirm
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 <?php require_once('Views/Template/footer.phtml'); ?>

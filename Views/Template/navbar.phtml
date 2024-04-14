@@ -12,15 +12,15 @@
 
         <ul class="navbar-nav me-auto mb-2 mb-lg-0 px-4">
             <?php /** @var $view */
-            $links = array(['name' => 'Home', 'href' => '/'], ['name' => 'Contact', 'href' => '/contact.php'], ['name' => 'Dashboard', 'href' => '/dashboard.php'], ['name' => 'About', 'href' => '/about.php']); //use of array to store navigations allowing easy changes to the markup when adding/removing links
+            $links = array(['name' => 'Home', 'href' => '/'], ['name' => 'Contact', 'href' => '/contact.php'], ['name' => 'About', 'href' => '/about.php']); //use of array to store navigations allowing easy changes to the markup when adding/removing links
             foreach ($links as $link) { ?>
                 <?php echo '
             <li class="nav-item text-uppercase fs-6 " id="' . $link['name'] . '"><a href="' . $link['href'] . ' " class="nav-link">' . $link['name'] . '</a></li> 
             ' //Loops through the array of links applying the styling to each link but only needing to write it once?>
             <?php } ?>
         </ul>
-
-        <form action="post" class="d-flex flex-column position-relative flex-fill">
+        <?php require_once ('filters.phtml'); ?>
+        <div class="d-flex flex-column position-relative flex-fill">
             <div class="d-flex input-group">
                 <input type="search" class="form-control search--input" placeholder="Search..." aria-label="Search" onkeyup="ajaxController.getSearch(this.value)">
                 <span><button class="button button--tertiary button--search"><svg xmlns="http://www.w3.org/2000/svg"
@@ -30,8 +30,11 @@
                                 d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
                         </svg></button></span>
             </div>
-           <?php require_once ('search_suggestions.phtml'); ?>
-        </form>
+            <?php require_once ('search_suggestions.phtml'); ?>
+        </div>
+
+
+
         <div class="px-2">
             <?php if (isset($_SESSION['login'])) {
                 require_once('navlogout.phtml');

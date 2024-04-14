@@ -8,14 +8,14 @@
 }
 
 html {
-  height: 100vh;
+  min-height: 100vh;
 }
 
 body {
   margin: 0;
   padding: 0;
   background: rgba(var(--colour-tertiary), 0.3);
-  height: 100%;
+  min-height:100vh;
 }
 
 /* ---COMPONENTS--- */
@@ -86,8 +86,6 @@ body {
   color: white;
 }
 
-/* ---PAGES--- */
-
-/* ---Home--- */
-
-/* ---Dashboard--- */
+.bg--shadow {
+  box-shadow: 2px 2px 10px black;
+}

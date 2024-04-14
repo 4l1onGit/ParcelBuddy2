@@ -2,11 +2,11 @@
 require_once('UserType.php');
 class UserData extends UserType
 {
-    protected $_id, $_username, $_password, $_userType, $_statusCode; //Stores user data
+    protected $_userId, $_username, $_password, $_userType, $_statusCode; //Stores user data
 
     public function __construct($dbRow)
     {
-        $this->_id = $dbRow['UserID'];
+        $this->_userId = $dbRow['UserID'];
         $this->_username = $dbRow['username'];
         $this->_password = $dbRow['password'];
         $this->_userType = $dbRow['UserType'];
@@ -16,7 +16,7 @@ class UserData extends UserType
 
     public function getUserID() //Accessors for userdata fields
     {
-        return $this->_id;
+        return $this->_userId;
     }
 
     public function getUsername()
