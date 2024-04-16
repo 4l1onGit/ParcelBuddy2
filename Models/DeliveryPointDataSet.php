@@ -66,65 +66,65 @@ class DeliveryPointDataSet //Used for handling DeliveryPoint data
         try {
             $sqlQuery = 'UPDATE delivery_point SET '; //Prepare Sql query
 
-            if (isset($data['name'])) { //Adds parameters to query based on the values that will be updated
+            if (isset($data['_name'])) { //Adds parameters to query based on the values that will be updated
                 $sqlQuery .= 'Name = ?,';
-                $params[$paramCount] = $data['name'];
+                $params[$paramCount] = $data['_name'];
                 $paramCount++;
             }
-            if (isset($data['addressOne'])) {
+            if (isset($data['_addressOne'])) {
                 if($paramCount > 0) {
                     $sqlQuery.=' ';
                 }
                 $sqlQuery .= 'AddressOne = ?,';
-                $params[$paramCount] = $data['addressOne'];
+                $params[$paramCount] = $data['_addressOne'];
                 $paramCount++;
             }
-            if (isset($data['addressTwo'])) {
+            if (isset($data['_addressTwo'])) {
                 if($paramCount > 0) {
                     $sqlQuery.=' ';
                 }
                 $sqlQuery .= 'AddressTwo = ?,';
-                $params[$paramCount] = $data['addressTwo'];
+                $params[$paramCount] = $data['_addressTwo'];
                 $paramCount++;
             }
-            if (isset($data['postcode'])) {
+            if (isset($data['_postcode'])) {
                 if($paramCount > 0) {
                     $sqlQuery.=' ';
                 }
                 $sqlQuery .= 'Postcode = ?,';
-                $params[$paramCount] = $data['postcode'];
+                $params[$paramCount] = $data['_postcode'];
                 $paramCount++;
             }
-            if (isset($data['deliverer'])) {
+            if (isset($data['_deliverer'])) {
                 if($paramCount > 0) {
                     $sqlQuery.=' ';
                 }
                 $sqlQuery .= 'Deliverer = ?,';
-                $params[$paramCount] = $data['deliverer'];
+                $params[$paramCount] = $data['_deliverer'];
                 $paramCount++;
             }
-            if (isset($data['lat'])) {
+            if (isset($data['_lat'])) {
                 if($paramCount > 0) {
                     $sqlQuery.=' ';
                 }
                 $sqlQuery .= 'Lat = ?,';
-                $params[$paramCount] = $data['lat'];
+                $params[$paramCount] = $data['_lat'];
                 $paramCount++;
             }
-            if (isset($data['lng'])) {
+            if (isset($data['_lng'])) {
                 if($paramCount > 0) {
                     $sqlQuery.=' ';
                 }
                 $sqlQuery .= 'Lng = ?,';
-                $params[$paramCount] = $data['lng'];
+                $params[$paramCount] = $data['_lng'];
                 $paramCount++;
             }
-            if (isset($data['status'])) {
+            if (isset($data['_status'])) {
                 if($paramCount > 0) {
                     $sqlQuery.=' ';
                 }
                 $sqlQuery .= 'Status = ?,';
-                $params[$paramCount] = $data['status'];
+                $params[$paramCount] = $data['_status'];
                 $paramCount++;
             }
 //            if (isset($data['del_photo']) ) { To be implemented
@@ -146,7 +146,7 @@ class DeliveryPointDataSet //Used for handling DeliveryPoint data
             for( $i = 0; $i < $paramCount; $i++) { //Loops through parameters, uses bind to prevent sql injection
                 $statement->bindValue($i + 1, $params[$i]);
             }
-            $statement->bindValue(++$paramCount, $data['id']);
+            $statement->bindValue(++$paramCount, $data['_id']);
             return $statement->execute();
         } catch (Exception $ex) {
             return false;
@@ -205,7 +205,7 @@ class DeliveryPointDataSet //Used for handling DeliveryPoint data
                 if ($paramCount > 0) {
                     $sqlQuery .= ' OR ';
                 }
-                $sqlQuery .= 'AddressOne = ?';
+                $sqlQuery .= 'AddressOne LIKE ?';
 
                 $params[$paramCount] = $data['addressOne'];
                 $paramCount++;
@@ -214,7 +214,7 @@ class DeliveryPointDataSet //Used for handling DeliveryPoint data
                 if ($paramCount > 0) {
                     $sqlQuery .= ' OR ';
                 }
-                $sqlQuery .= 'AddressTwo = ?';
+                $sqlQuery .= 'AddressTwo LIKE ?';
 
                 $params[$paramCount] = $data['addressTwo'];
                 $paramCount++;
@@ -223,7 +223,7 @@ class DeliveryPointDataSet //Used for handling DeliveryPoint data
                 if ($paramCount > 0) {
                     $sqlQuery .= ' OR ';
                 }
-                $sqlQuery .= 'Postcode = ?';
+                $sqlQuery .= 'Postcode LIKE ?';
 
                 $params[$paramCount] = $data['postcode'];
                 $paramCount++;
@@ -233,25 +233,25 @@ class DeliveryPointDataSet //Used for handling DeliveryPoint data
                 if ($paramCount > 0) {
                     $sqlQuery .= ' OR ';
                 }
-                $sqlQuery .= 'FORMAT(Lat, 2) = FORMAT(?, 2)';
+                $sqlQuery .= 'FORMAT(Lat, 2) LIKE FORMAT(?, 2)';
 
-                $params[$paramCount] = $data['lat'];
+                $params[$paramCount] = floatval($data['lat']);
                 $paramCount++;
             }
             if (isset($data['lng'])) {
                 if ($paramCount > 0) {
                     $sqlQuery .= ' OR ';
                 }
-                $sqlQuery .= 'FORMAT(Lng, 2) = FORMAT(?, 2)';
+                $sqlQuery .= 'FORMAT(Lng, 2) LIKE FORMAT(?, 2)';
 
-                $params[$paramCount] = $data['lng'];
+                $params[$paramCount] = floatval($data['lng']);
                 $paramCount++;
             }
             if (isset($data['status'])) {
                 if ($paramCount > 0) {
                     $sqlQuery .= ' OR ';
                 }
-                $sqlQuery .= 'status_code = ?';
+                $sqlQuery .= 'status_code LIKE ?';
                 $params[$paramCount] = $data['status'];
                 $paramCount++;
             }
@@ -264,7 +264,7 @@ class DeliveryPointDataSet //Used for handling DeliveryPoint data
                 if ($paramCount > 0) {
                     $sqlQuery .= ' AND ';
                 }
-                $sqlQuery .= 'Deliverer = ?';
+                $sqlQuery .= 'Deliverer LIKE ?';
 
                 $params[$paramCount] = $data['deliverer'] ?? $id;
                 $paramCount++;
@@ -275,7 +275,7 @@ class DeliveryPointDataSet //Used for handling DeliveryPoint data
 
 
            for( $i = 0; $i < $paramCount; $i++) { //Loops through the amount of parameters set to bind values to prevent SQL injection
-                $statement->bindValue($i + 1, $params[$i]);
+                $statement->bindValue($i + 1, '%'.$params[$i].'%');
             }
 
             $statement->execute();
@@ -290,7 +290,6 @@ class DeliveryPointDataSet //Used for handling DeliveryPoint data
         } catch (Exception $ex) {
             return [];
         }
-
     }
 
     public function fetchDelivery(int $id) : array|false

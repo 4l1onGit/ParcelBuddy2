@@ -120,16 +120,71 @@
 
 
     <div class="d-flex justify-content-center flex-column align-items-center">
-        <div class="btn-group dropend">
-            <button type="button" class="btn btn-secondary">
-                Search
+        <div class="btn-group dropbottom"> <!-- use of bootstrap 5 dropdown menu to provide a simple filter menu near the searchbar -->
+            <button type="button" class="btn btn-secondary button--filter">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-filter" viewBox="0 0 16 16">
+                    <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5"/>
+                </svg>
             </button>
-            <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                <span class="visually-hidden">Toggle Dropright</span>
+            <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split button--filter" data-bs-toggle="dropdown" aria-expanded="false">
+                <span class="visually-hidden">Toggle Filters</span>
             </button>
-            <ul class="dropdown-menu">
+            <ul class="dropdown-menu p-4">
                 <!-- Dropdown menu links -->
-
+                <li class="list-group-item">
+                    <div>
+                        <label class="form-label" for="idCheckbox">ID</label>
+                        <input type="checkbox" name="idCheckbox" id="idCheckbox">
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div>
+                        <label class="form-label" for="nameCheckbox">Name</label>
+                        <input type="checkbox" name="nameCheckbox" id="nameCheckbox">
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div>
+                        <label class="form-label" for="addressOneCheckbox">Address One</label>
+                        <input type="checkbox" name="addressOneCheckbox" id="addressOneCheckbox">
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div>
+                        <label class="form-label" for="addressTwoCheckbox">Address Two</label>
+                        <input type="checkbox" name="addressTwoCheckbox" id="addressTwoCheckbox">
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div>
+                        <label class="form-label" for="latCheckbox">Lat</label>
+                        <input type="checkbox" name="latCheckbox" id="latCheckbox">
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div>
+                        <label class="form-label" for="lngCheckbox">Lng</label>
+                        <input type="checkbox" name="lngCheckbox" id="lngCheckbox">
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div>
+                        <label class="form-label" for="postcodeCheckbox">Postcode</label>
+                        <input type="checkbox" name="postcodeCheckbox" id="postcodeCheckbox">
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div>
+                        <label class="form-label" for="delivererCheckbox">Deliverer</label>
+                        <input type="checkbox" name="delivererCheckbox" id="delivererCheckbox">
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div>
+                        <label class="form-label" for="statusCheckbox">Status</label>
+                        <input type="checkbox" name="statusCheckbox" id="statusCheckbox">
+                    </div>
+                </li>
             </ul>
         </div>
     </div>

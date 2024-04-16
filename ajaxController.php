@@ -12,8 +12,8 @@ $pageCount = 0;
 $recordsPerPage = 10;
 $deliveryPointDataSet = new DeliveryPointDataSet();
 
-if(isset($_SESSION['login'])) {
-    if ($q === "deliveries") {
+if(isset($_SESSION['login'])) { //Makes sure the user is logged in before any of the backend functionalities are carried out
+    if ($q === "deliveries") { //Checks if the query is deliveries
 
         if (strtolower($_SESSION['login']->getUserType()) === 'manager') {
             $deliveryPointData = $deliveryPointDataSet->fetchAllDeliveries();
@@ -26,13 +26,13 @@ if(isset($_SESSION['login'])) {
         $pageCount = ceil($totalItems / $recordsPerPage); //Set the page count by dividing totalItems by the amount of records to be displayed (Rounded up)
         $offset = ($currentPage - 1) * $recordsPerPage; //The data is shown is determined by the current page and total records to be displayed
         $deliveryPointData = array_slice($deliveryPointData, $offset, $recordsPerPage); //filtered records made into 10 records
-        foreach($deliveryPointData as $delivery) {
+        foreach($deliveryPointData as $delivery) { //The following code assigns easy to use array keys and values to later be accessed when converted to json, This also could've been done in the DeliveryPoint class using JsonSeralize.
             $deliveryPoints[] = array("id" => $delivery->getID(), "name" => $delivery->getName(), "addressOne" => $delivery->getAddressOne(), "addressTwo" => $delivery->getAddressTwo(), "postcode" => $delivery->getPostcode(), "lat" => $delivery->getLat(), "lng" => $delivery->getLng(), "username" => $delivery->getUsername(), "status" => $delivery->getStatusText(), "photo" => $delivery->getDelPhoto());
         }
         echo json_encode($deliveryPoints);
     }
 
-    if($q === "total") {
+    if($q === "total") { //Used to find the total amount of records available to the logged in user, Managers have access to all records
         if (strtolower($_SESSION['login']->getUserType()) === 'manager') {
             $deliveryPointData = $deliveryPointDataSet->fetchAllDeliveries();
 
@@ -42,7 +42,7 @@ if(isset($_SESSION['login'])) {
         echo json_encode(count($deliveryPointData));
     }
 
-    if($q === "record" && $_REQUEST['id']) {
+    if($q === "record" && $_REQUEST['id']) { //Uses the id to select the corresponding record
         $deliveryPoints = [];
         if (strtolower($_SESSION['login']->getUserType()) === 'manager') {
             $deliveryPointData = $deliveryPointDataSet->fetchDelivery($_REQUEST['id']);
@@ -58,30 +58,48 @@ if(isset($_SESSION['login'])) {
         echo json_encode($deliveryPoints);
     }
 
-    if($q === "updateRecord" && $_REQUEST['id']) {
-        $data = $_REQUEST['data'];
-        
+    if($q === "updateRecord") { //Used to update the record with provided data
+        $data = json_decode($_REQUEST['data'], 1);
+        $deliveryPointData = $deliveryPointDataSet->updateDeliveryPoint($data);
+        echo json_encode($deliveryPointData);
     }
 
-    if ($q === "search") {
-        $currentPage = $_GET['page'] ?? 1; //Sets page to current page number
-        $searchQuery = $_GET['search'];
-        $searchPage = 1;
-        $searchResultPerPage = 10;
+    if ($q === "search") { //Used for the live search functionality
+        $currentPage = $_REQUEST['page'] ?? 1; //Sets page to current page number
+        $search = $_REQUEST['search'];
 
-        $deliveryPointData = $deliveryPointDataSet->fetchSearchDeliveries($searchQuery);
+        if(isset($_REQUEST['filters']))
+        {
+            $data=[];
+            $filters = json_decode($_REQUEST['filters']);
+
+            foreach($filters as $filter) {
+                $data[$filter] = $search;
+            }
+
+            $deliveryPointData = $deliveryPointDataSet->fetchFilteredDeliveries($data);
+
+        } else {
+            $deliveryPointData = $deliveryPointDataSet->fetchSearchDeliveries($search);
+        }
+
+        $searchResultPerPage = 5;
+
         $totalItems = count($deliveryPointData);
         $searchCount = ceil($totalItems / $searchResultPerPage);
-        $offset = ($searchPage -1) * $searchResultPerPage;
+        $offset = ($currentPage -1) * $searchResultPerPage;
         $deliveryPointData = array_slice($deliveryPointData, $offset, $searchResultPerPage);
+
         $deliveryPoints = [];
         foreach($deliveryPointData as $delivery) {
-            $deliveryPoints[] = array("id" => $delivery->getID(), "name" => $delivery->getName());
+            $deliveryPoints[] = array("id" => $delivery->getID(), "name" => $delivery->getName(), "addressOne" => $delivery->getAddressOne());
         }
+
+
         echo json_encode($deliveryPoints);
     }
 
-    if($q === 'statusTypes') {
+    if($q === 'statusTypes') { //Used to fetch statusTypes (Used for easy updating of delivery status)
         $statusTypeDataSet = new DeliveryStatusTypeDataSet();
         $statusTypeData = $statusTypeDataSet->fetchStatusTypes();
         $statusTypes = [];
@@ -90,7 +108,7 @@ if(isset($_SESSION['login'])) {
         }
         echo json_encode($statusTypes);
     }
-    if($q === 'deliverers') {
+    if($q === 'deliverers') { //Used to fetch the deliverers making it easier to assign deliverers to different deliveries
         $usersDataSet = new UserDataSet();
         $usersData = $usersDataSet->fetchAllUsers();
         $users = [];
@@ -98,6 +116,11 @@ if(isset($_SESSION['login'])) {
             $users[] = array("id" => $user->getUserID(),"username" => $user->getUsername());
         }
         echo json_encode($users);
+    }
+
+    if($q === 'delete' && $_REQUEST['id'] && (strtolower($_SESSION['login']->getUserType())) === 'manager') { //Used to delete records but must be a manager to do so
+        $deliveryPointData = $deliveryPointDataSet->deleteDeliveryPoint($_REQUEST['id']);
+        echo json_encode($deliveryPointData);
     }
 }
 

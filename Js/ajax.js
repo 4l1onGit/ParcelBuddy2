@@ -2,49 +2,109 @@
 class AjaxController{
 
     constructor() {
-        this.formData = {};
+        this.formData = {}; //Fields used for updating data smoothly without page reload
+        this.currentPage = 1;
+
     }
 
 
-    getSearch(search) {
+    async getSearch(search, page = 1) { //Function for livesearch
+        if (page < 1) {
+            page = 1;
+        }
         let uic = document.getElementById("suggestions");
         uic.innerHTML = "";
         if (search.length === 0) {
             uic.classList.remove("bg-white");
         } else {
-           fetch(`ajaxController.php?q=search&search=${search}`, {method: "GET"}).then(async (res) => {
-               return JSON.parse(await res.text());
+            const idCheckbox = document.getElementById('idCheckbox');
+            const nameCheckbox = document.getElementById('nameCheckbox');
+            const addressOneCheckBox = document.getElementById('addressOneCheckbox');
+            const addressTwoCheckBox = document.getElementById('addressTwoCheckbox');
+            const latCheckBox = document.getElementById('latCheckbox');
+            const lngCheckBox = document.getElementById('lngCheckbox');
+            const postcodeCheckBox = document.getElementById('postcodeCheckbox');
+            const delivererCheckBox = document.getElementById('delivererCheckbox');
+            const statusCheckBox = document.getElementById('statusCheckbox');
+            let suggestions = [];
+            let searchQuery = `ajaxController.php?q=search&search=${search}&page=${page}`
+            if (idCheckbox.checked || nameCheckbox.checked || addressOneCheckBox.checked || addressTwoCheckBox.checked || postcodeCheckBox.checked || delivererCheckBox.checked || statusCheckBox.checked || latCheckBox.checked || lngCheckBox.checked) {
+                let filters = [];
+
+                if (idCheckbox.checked) {
+                    filters.push('id');
+                }
+                if(nameCheckbox.checked) {
+                    filters.push('name');
+                }
+                if(addressOneCheckBox.checked) {
+                    filters.push('addressOne');
+                }
+                if(addressTwoCheckBox.checked) {
+                    filters.push('addressTwo');
+                }
+                if(latCheckBox.checked) {
+                    filters.push('lat');
+                }
+                if(lngCheckBox.checked) {
+                    filters.push('lng');
+                }
+                if(postcodeCheckBox.checked) {
+                    filters.push('postcode');
+                }
+                if(delivererCheckBox.checked) {
+                    filters.push('deliverer');
+                }
+                if(statusCheckBox.checked) {
+                    filters.push('status');
+                }
+
+                searchQuery = `ajaxController.php?q=search&search=${search}&page=${page}&filters=${JSON.stringify(filters)}`
+            }
+            fetch(searchQuery, {method: "GET"}).then(async (res) => {
+                return JSON.parse(await res.text());
             }).then((data) => {
-               let searchSuggestions = data;
 
-               let suggestions = [];
+                let searchSuggestions = data;
+                uic.innerHTML = "";
+                searchSuggestions.forEach((delivery) => {
+                    suggestions += delivery.name;
+                    uic.innerHTML +=
+                        "<li class='list-group-item'><a href='record.php?id=" +
+                        delivery.id +
+                        "'>" +
+                        delivery.name + ' ' + delivery.addressOne +
+                        "</a></li>";
+                });
+                let upSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-caret-up-fill" viewBox="0 0 16 16">
+  <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
+</svg>`;
 
-               uic.innerHTML = "";
-               searchSuggestions.forEach((delivery) => {
-                   console.log(delivery);
-                   suggestions += delivery.name;
-                   uic.innerHTML +=
-                       "<li class='list-group-item'><a href='record.php?id=" +
-                       delivery.id +
-                       "'>" +
-                       delivery.name +
-                       "</a></li>";
-               });
-               uic.classList.add("bg-white");
-           })
+                let downSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
+  <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+</svg>`;
+                uic.innerHTML += `<li class="list-group-item"><button class="btn button--tertiary" onclick="ajaxController.getSearch('${search}', ${page - 1})">${upSvg}</button><button class="btn button--tertiary mx-2" onclick="ajaxController.getSearch('${search}', ${page + 1})">${downSvg}</button></li>`;
+                uic.classList.add("bg-white");
+            })
+
         }
     }
+    deleteBtn(id) { //Used to set delete function to the delete button on the modal
+        let delBtn = document.getElementById('deleteBtn')
+        delBtn.onclick = () => {this.deleteRecord(id)};
 
-    getDeliveries(page = 1) {
+    }
+    getDeliveries(page = 1) { //Used to fetch deliveries
         let uic = document.getElementById("records");
         uic.innerHTML = '';
+        this.currentPage = page;
 
-        fetch('ajaxController.php?q=deliveries&page=' + page, {method: 'GET'}).then(async (res) => {
+        fetch(`ajaxController.php?q=deliveries&page=${page}`, {method: 'GET'}).then(async (res) => {
             return JSON.parse(await res.text());
         }).then((data) => {
             vectorLayer.removeAllFeatures();
             data.forEach((deliveryPoint) => {
-                uic.innerHTML += `<tr onclick="set_position(${deliveryPoint.lat}, ${deliveryPoint.lng})"><td>${deliveryPoint.id}</td><td>${deliveryPoint.name}</td> <td>${deliveryPoint.addressOne}  ${deliveryPoint.addressTwo}<br>Postcode: ${deliveryPoint.postcode}<br> Lat/Lng: ${deliveryPoint.lat}, ${deliveryPoint.lng}</td> <td>${deliveryPoint.username}</td> <td>${deliveryPoint.status}</td><td><img src='Images/${deliveryPoint.photo}' height='75px' width='75px'></td> <td><a id='qrcode${deliveryPoint.id}' href=/record.php?id='${deliveryPoint.id}'></a></td><td ><div class="d-flex flex-column"><button class="btn btn-danger mb-1"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                uic.innerHTML += `<tr onclick="set_position(${deliveryPoint.lat}, ${deliveryPoint.lng})"><td>${deliveryPoint.id}</td><td>${deliveryPoint.name}</td> <td>${deliveryPoint.addressOne}  ${deliveryPoint.addressTwo}<br>Postcode: ${deliveryPoint.postcode}<br> Lat/Lng: ${deliveryPoint.lat}, ${deliveryPoint.lng}</td> <td>${deliveryPoint.username}</td> <td>${deliveryPoint.status}</td><td><img src='Images/${deliveryPoint.photo}' height='75px' width='75px'></td> <td><a id='qrcode${deliveryPoint.id}' href=/record.php?id='${deliveryPoint.id}'></a></td><td ><div class="d-flex flex-column"><button class="btn btn-danger mb-1" data-bs-toggle="modal" data-bs-target="#deleteModal" onclick="ajaxController.deleteBtn(${deliveryPoint.id})"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
   <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"/>
 </svg></button><button type="button" data-bs-toggle="modal" data-bs-target="#recordModal" onclick="ajaxController.getRecord(${deliveryPoint.id})" class="btn btn-primary mt-1"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
   <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
@@ -69,11 +129,32 @@ class AjaxController{
         });
     }
 
-    getFilteredDeliveries(filters) {
 
+
+    getFilteredDeliveries(search) { //Used to get filtered deliveries when filters are applied
+        const idCheckbox = document.getElementById('idCheckbox');
+        const nameCheckbox = document.getElementById('nameCheckbox');
+        const addressOneCheckBox = document.getElementById('addressOneCheckbox');
+        const addressTwoCheckBox = document.getElementById('addressTwoCheckbox');
+        const postcodeCheckBox = document.getElementById('postcodeCheckbox');
+        const delivererCheckBox = document.getElementById('delivererCheckbox');
+        const statusCheckBox = document.getElementById('statusCheckbox');
+
+        // let filters = {};
+        //
+        //
+        //
+        // let filters = ['name', 'addressOne']
+        // return fetch(`ajaxController.php?q=filteredDeliveries&filters=${JSON.stringify(filters)}&search=${search.toString()}`, {method: 'GET'}).then(async (res) => {
+        //     return JSON.parse(await res.text());
+        // }).then((data) => {
+        //     return data;
+        // }).catch((err) => {
+        //     console.log(err);
+        // })
     }
 
-    getRecord(id) {
+    getRecord(id) { //Gets specific record using the provided id used for updating form
         fetch(`ajaxController.php?q=record&id=${id}`, {method: 'GET'}).then(async (res) => {
             return JSON.parse(await res.text());
         }).then(async (data) => {
@@ -137,11 +218,13 @@ class AjaxController{
             })
 
             let statusTypes = await this.getStatusTypes();
+            recordStatus.innerHTML = '';
             statusTypes.forEach((status) => {
                 recordStatus.innerHTML += `<option value="${status.statusCode}">${status.statusText}</option>`
             })
 
             let deliverers = await this.getDeliverers();
+            recordDeliverer.innerHTML = '';
             deliverers.forEach((deliver) => {
                 recordDeliverer.innerHTML += `<option value="${deliver.id}">${deliver.username}</option>`
             })
@@ -151,7 +234,7 @@ class AjaxController{
         })
     }
 
-    getMarkers() {
+    getMarkers() { //Used to get the markers for the live mapping feature
         fetch("getDeliveries.php?q=deliveries", {method: 'GET'}).then(async (res) => {
             return JSON.parse(await res.text());
         }).then((data) => {
@@ -163,7 +246,7 @@ class AjaxController{
         })
     }
 
-    getStatusTypes() {
+    getStatusTypes() { //Used to get StatusTypes
         return fetch('ajaxController.php?q=statusTypes', {method: 'GET'}).then(async (res) => {
             return JSON.parse(await res.text());
         })
@@ -176,7 +259,7 @@ class AjaxController{
 
     }
 
-    getDeliverers() {
+    getDeliverers() { //Used to get the deliverers
         return fetch('ajaxController.php?q=deliverers', {method: 'GET'}).then(async (res) => {
             return JSON.parse(await res.text());
         })
@@ -188,7 +271,7 @@ class AjaxController{
             })
     }
 
-    getPagination(page) {
+    getPagination(page) { //Used to provide pagination
         fetch('ajaxController.php?q=total', {method: 'GET'}).then(async (res) => {
             return JSON.parse(await res.text());
         }).then((data) => {
@@ -236,7 +319,7 @@ class AjaxController{
 
     }
 
-    editRecord() {
+    editRecord() { //Used for updating records
         const recordName = document.getElementById('recordName');
         const recordAddressOne = document.getElementById('recordAddressOne');
         const recordAddressTwo = document.getElementById('recordAddressTwo');
@@ -244,6 +327,7 @@ class AjaxController{
         const recordDeliverer = document.getElementById('recordDeliverer');
         const recordStatus = document.getElementById('recordStatus');
         const recordPhoto = document.getElementById('recordPhoto');
+        const confirmEdit = document.getElementById('confirmEdit');
         let newFormData = new recordFormData();
         if(this.formData.name !== recordName.value) {
             newFormData.name = recordName.value;
@@ -266,14 +350,26 @@ class AjaxController{
         if(this.formData.photo !== recordPhoto.filename) {
             newFormData.photo = recordStatus.filename;
         }
-        let id = this.formData.id;
+        newFormData.id = this.formData.id;
         let data = JSON.stringify(newFormData);
 
-        fetch(`ajaxController.php?q=updateRecord&id=${id}&data=${data}`, {method: 'post'}).then(async (res) => {
-           return JSON.parse(await res.text());
-       }).then((data) => {console.log(data)}).catch((err) => {
-           console.log(err);
-        })
+        if(confirmEdit.checked){
+            fetch(`ajaxController.php?q=updateRecord&data=${data}`, {method: 'post'}).then(async (res) => {
+                return JSON.parse(await res.text());
+            }).then((data) => {
+                console.log(data)
+                this.getDeliveries(this.currentPage);})
+                .catch((err) => {
+                console.log(err);
+            })
+        }
     }
 
+    deleteRecord(id) { //Used to delete records
+        fetch(`ajaxController.php?q=delete&id=${id}`, {method: 'post'}).then(async (res) => {
+            return JSON.parse(await res.text());
+        }).then((data) => {this.getDeliveries(this.currentPage);}
+
+        ).catch((err) => {console.log(err);})
+    }
 }
