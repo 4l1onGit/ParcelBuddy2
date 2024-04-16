@@ -14,10 +14,10 @@
                 <ul class="list-group">
                     <li class="list-group-item">Username: <?php echo ucfirst($_SESSION['login']->getUsername()) ?></li>
                     <li class="list-group-item">Role: <?php echo $_SESSION['login']->getUserType() ?></li>
-
                 </ul>
             </div>
             <form class="modal-footer" method="post">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal" onclick="ajaxController.setUpCreateForm()">Create Record</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="submit" class="btn btn-danger" id="logout" value="logout" name="logoutbutton">Sign Out</button>
             </form>

@@ -1,10 +1,12 @@
 class recordFormData {
-    constructor(id,name, addressOne, addressTwo, postcode, deliverer, status, photo) {
+    constructor(id,name, addressOne, addressTwo, postcode, deliverer, status, lat, lng, photo) {
         this._id = id;
         this._name = name;
         this._addressOne = addressOne;
         this._addressTwo = addressTwo;
         this._postcode = postcode;
+        this._lat = lat;
+        this._lng = lng;
         this._deliverer = deliverer;
         this._status = status;
         this._photo = photo;
@@ -47,6 +49,20 @@ class recordFormData {
 
     set postcode(value) {
         this._postcode = value;
+    }
+
+    get lat() {
+        return this._lat;
+    }
+    set lat(value) {
+        this._lat = value;
+    }
+
+    get lng() {
+        return this._lng;
+    }
+    set lng(value) {
+        this._lng = value;
     }
 
     get deliverer() {

@@ -13,8 +13,7 @@ $recordsPerPage = 10;
 $deliveryPointDataSet = new DeliveryPointDataSet();
 
 if(isset($_SESSION['login'])) { //Makes sure the user is logged in before any of the backend functionalities are carried out
-    if ($q === "deliveries") { //Checks if the query is deliveries
-
+    if ($q === "deliveries" && ($_REQUEST['token'] === $_SESSION['ajaxToken'])) { //Checks if the query is deliveries
         if (strtolower($_SESSION['login']->getUserType()) === 'manager') {
             $deliveryPointData = $deliveryPointDataSet->fetchAllDeliveries();
 
@@ -42,7 +41,7 @@ if(isset($_SESSION['login'])) { //Makes sure the user is logged in before any of
         echo json_encode(count($deliveryPointData));
     }
 
-    if($q === "record" && $_REQUEST['id']) { //Uses the id to select the corresponding record
+    if($q === "record" && $_REQUEST['id'] && ($_REQUEST['token'] === $_SESSION['ajaxToken'])) { //Uses the id to select the corresponding record
         $deliveryPoints = [];
         if (strtolower($_SESSION['login']->getUserType()) === 'manager') {
             $deliveryPointData = $deliveryPointDataSet->fetchDelivery($_REQUEST['id']);
@@ -58,13 +57,21 @@ if(isset($_SESSION['login'])) { //Makes sure the user is logged in before any of
         echo json_encode($deliveryPoints);
     }
 
-    if($q === "updateRecord") { //Used to update the record with provided data
+    if($q === "updateRecord" && ($_REQUEST['token'] === $_SESSION['ajaxToken'])) { //Used to update the record with provided data
         $data = json_decode($_REQUEST['data'], 1);
         $deliveryPointData = $deliveryPointDataSet->updateDeliveryPoint($data);
         echo json_encode($deliveryPointData);
     }
 
-    if ($q === "search") { //Used for the live search functionality
+    if($q === "createRecord" && ($_REQUEST['token'] === $_SESSION['ajaxToken'])) {
+        if (strtolower($_SESSION['login']->getUserType()) === 'manager')  {
+            $data = json_decode($_REQUEST['data'], 1);
+            $deliveryPointData = $deliveryPointDataSet->createDeliveryPoint($data);
+            echo json_encode($deliveryPointData);
+        }
+    }
+
+    if ($q === "search" && ($_REQUEST['token'] === $_SESSION['ajaxToken'])) { //Used for the live search functionality
         $currentPage = $_REQUEST['page'] ?? 1; //Sets page to current page number
         $search = $_REQUEST['search'];
 
@@ -99,7 +106,7 @@ if(isset($_SESSION['login'])) { //Makes sure the user is logged in before any of
         echo json_encode($deliveryPoints);
     }
 
-    if($q === 'statusTypes') { //Used to fetch statusTypes (Used for easy updating of delivery status)
+    if($q === 'statusTypes' && ($_REQUEST['token'] === $_SESSION['ajaxToken'])) { //Used to fetch statusTypes (Used for easy updating of delivery status)
         $statusTypeDataSet = new DeliveryStatusTypeDataSet();
         $statusTypeData = $statusTypeDataSet->fetchStatusTypes();
         $statusTypes = [];
@@ -108,7 +115,7 @@ if(isset($_SESSION['login'])) { //Makes sure the user is logged in before any of
         }
         echo json_encode($statusTypes);
     }
-    if($q === 'deliverers') { //Used to fetch the deliverers making it easier to assign deliverers to different deliveries
+    if($q === 'deliverers' && ($_REQUEST['token'] === $_SESSION['ajaxToken'])) { //Used to fetch the deliverers making it easier to assign deliverers to different deliveries
         $usersDataSet = new UserDataSet();
         $usersData = $usersDataSet->fetchAllUsers();
         $users = [];

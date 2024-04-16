@@ -3,8 +3,70 @@
 
 
 <div class="container-fluid home-container">
-    <div class="row py-4">
-        <div class="col-md-6">
+    <nav aria-label="Page navigation" class="col-md-6 pt-2">
+        <ul class="pagination" id="page-nav">
+
+        </ul>
+    </nav>
+    <div class="row">
+        <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="form-label">Create Record</h4>
+                    </div>
+                    <div class="modal-body p-4 rounded-2">
+                        <div class="mb-3">
+                            <label for="recordName" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="recordName" name="recordName">
+                        </div>
+                        <div class="mb-3">
+                            <label for="recordAddressOne" class="form-label">Address One</label>
+                            <input type="text" class="form-control" id="recordAddressOne" name="recordAddressOne">
+                        </div>
+                        <div class="mb-3">
+                            <label for="recordAddressTwo" class="form-label">Address Two</label>
+                            <input type="text" class="form-control" id="recordAddressTwo" name="recordAddressTwo">
+                        </div>
+                        <div class="mb-3">
+                            <label for="recordPostcode" class="form-label">Postcode</label>
+                            <input type="text" class="form-control" id="recordPostcode" name="recordPostcode">
+                        </div>
+                        <div class="mb-3">
+                            <label for="recordLat" class="form-label">Lat</label>
+                            <input type="text" class="form-control" id="recordLat" name="recordLat">
+                        </div>
+                        <div class="mb-3">
+                            <label for="recordLng" class="form-label">Lng</label>
+                            <input type="text" class="form-control" id="recordLng" name="recordLng">
+                        </div>
+                        <div class="mb-3">
+                            <label for="recordDeliverer" class="form-label">Deliverer</label>
+                            <select id="recordDeliverer" class="form-select" name='recordDeliverer'>
+
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="recordStatus" class="form-label">Status</label>
+                            <select class="form-select" id="recordStatus" name="recordStatus">
+                            </select>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" name="confirmCreate" type="checkbox" id="confirmCreate">
+                            <label class="form-check-label" for="confirmCreate">
+                                Confirm
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" id="create" value="create" name="createbutton" onclick="ajaxController.createRecord('<?php echo $token ?>')" data-bs-dismiss="modal">Create</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Desktop view -->
+        <div class="col-md-6 d-none d-md-block d-lg-block">
             <table class="table table-hover">
                 <thead>
                     <th>ID</th>
@@ -16,25 +78,48 @@
                     <th>Code</th>
                     <th>Edit</th>
                 </thead>
-                <tbody id="records">
+                <tbody id="recordsDesktop">
                 <script>
                     window.addEventListener("load", (event) => {
-                        ajaxController.getDeliveries();
+                        ajaxController.getDeliveries(1,'<?php echo $token ?>');
                     })
                 </script>
                 </tbody>
             </table>
         </div>
+        <!--Mobile View -->
+        <div class="col-sm-12 d-md-none d-lg-none">
+            <table class="table table-hover">
+                <thead>
+                <th>Details</th>
+                <th>Edit</th>
+                <th>Photo</th>
+                </thead>
+                <tbody id="recordsMobile">
+                <script>
+                    window.addEventListener("load", (event) => {
+                        ajaxController.getDeliveries(1,'<?php echo $token ?>', 'mobile');
+                    })
+                </script>
+                </tbody>
+            </table>
+        </div>
+
+
+        <!--Desktop view -->
         <div class="col-md-6 d-flex flex-column justify-content-center align-items-center">
             <div class="" id="map"  style="width: 100%; height: 1000px">
 
             </div>
-        </div>
-        <nav aria-label="Page navigation" class="col-md-6">
-            <ul class="pagination" id="page-nav">
 
-            </ul>
-        </nav>
+        </div>
+        <!-- Mobile View -->
+        <div class="col-sm-12 d-flex flex-column justify-content-center align-items-center">
+            <div class="" id="map"  style="width: 100%; height: 50vh">
+
+            </div>
+
+        </div>
     </div>
 </div>
 
@@ -86,7 +171,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" id="edit" value="edit" name="editbutton" onclick="ajaxController.editRecord()" data-bs-dismiss="modal">Edit</button>
+                    <button class="btn btn-primary" id="edit" value="edit" name="editbutton" onclick="ajaxController.editRecord('<?php echo $token ?>')" data-bs-dismiss="modal">Edit</button>
                 </div>
             </div>
         </div>

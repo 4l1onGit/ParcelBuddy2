@@ -15,6 +15,10 @@
     </title> <!-- Displays the page name in the tab using the value stored in pageTitle -->
 </head>
 <header class="header">
+    <?php
+    $token = substr(str_shuffle(MD5 (microtime())), 0, 20);
+    $_SESSION['ajaxToken'] = $token;
+    ?>
     <?php require_once ('navbar.phtml'); ?>
 </header>
 

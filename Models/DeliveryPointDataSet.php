@@ -29,18 +29,27 @@ class DeliveryPointDataSet //Used for handling DeliveryPoint data
 
 
     //Create delivery points
-    public function createDeliveryPoint($data) : bool
+    public function createDeliveryPoint(array $data) : bool
     {
-        $sqlQuery = 'INSERT INTO delivery_point (Name, AddressOne, AddressTwo, Postcode, Deliverer, Lat, Lng, Status) VALUES (?, ?, ?, ?, ?, ?, ?, 1)'; //SQL query stored in variable
+        $sqlQuery = 'INSERT INTO delivery_point (Name, AddressOne, AddressTwo, Postcode, Deliverer, Lat, Lng, Status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'; //SQL query stored in variable
         $statement = $this->_dbHandle->prepare($sqlQuery); // prepare a PDO statement
-        $statement->bindParam(1, $data['name']);  //Binds the data to parameter (?) prevents SQL injection
-        $statement->bindParam(2, $data['addressOne']);
-        $statement->bindParam(3, $data['addressTwo']);
-        $statement->bindParam(4, $data['postcode']);
-        $statement->bindParam(5, $data['deliverer']);
-        $statement->bindParam(6, $data['lat']);
-        $statement->bindParam(7, $data['lng']);
-        return $statement->execute(); //Executes the PDO statement and returns bool to confirm success
+        $statement->bindParam(1, $data['_name']);  //Binds the data to parameter (?) prevents SQL injection
+        $statement->bindParam(2, $data['_addressOne']);
+        $statement->bindParam(3, $data['_addressTwo']);
+        $statement->bindParam(4, $data['_postcode']);
+
+        $deliverer = intval($data['_deliverer']);
+        $statement->bindParam(5,$deliverer);
+        $statement->bindParam(6, $data['_lat']);
+        $statement->bindParam(7, $data['_lng']);
+        $status = intval($data['_status']);
+        $statement->bindParam(8, $status);
+        try {
+            return $statement->execute(); //Executes the PDO statement and returns bool to confirm success
+        } catch(PDOException $e) {
+            return false;
+        }
+
     }
 
     //Read delivery points 
