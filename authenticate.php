@@ -26,6 +26,7 @@ if (isset($_POST['loginbutton']) && isset($_POST['confirmLogin'])) { //Checks if
 
 if (isset($_POST["logoutbutton"])) { //Checks if the sign-out button has been used
     unset($_SESSION["login"]); //Removes user object
+    unset($_SESSION["ajaxToken"]); //Removes Session Token for ajax
     session_destroy(); //Ends session
 }
 

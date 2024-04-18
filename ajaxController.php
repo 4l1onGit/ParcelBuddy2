@@ -81,7 +81,8 @@ if(isset($_SESSION['login'])) { //Makes sure the user is logged in before any of
     if ($q === "search" && ($_REQUEST['token'] === $_SESSION['ajaxToken'])) { //Used for the live search functionality
         $currentPage = $_REQUEST['page'] ?? 1; //Sets page to current page number
         $search = $_REQUEST['search'];
-        $delivererId = $_REQUEST['id'] ?? null;
+        $delivererId = $_REQUEST['delivererId'] ?? null;
+        $statusId = $_REQUEST['statusId'] ?? null;
         if(isset($_REQUEST['filters']))
         {
             $data=[];
@@ -92,9 +93,14 @@ if(isset($_SESSION['login'])) { //Makes sure the user is logged in before any of
             $id = null;
             if(strtolower($_SESSION['login']->getUserType()) !== 'manager') {
                 $id = $_SESSION['login']->getId();
-            } else if(isset($delivererId)) {
+            }
+            if(isset($delivererId)) {
                 $id = $delivererId;
-        }
+            }
+            if(isset($statusId)) {
+                $data['status'] = $statusId;
+            }
+
             $deliveryPointData = $deliveryPointDataSet->fetchFilteredDeliveries($data, $id);
 
         } else {

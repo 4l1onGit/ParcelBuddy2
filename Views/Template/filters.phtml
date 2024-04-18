@@ -186,8 +186,12 @@
                 <li class="list-group-item">
                     <div>
                         <label class="form-label" for="statusCheckbox">Status</label>
-                        <input type="checkbox" name="statusCheckbox" id="statusCheckbox">
+                        <input type="checkbox" name="statusCheckbox" id="statusCheckbox" onclick="ajaxController.setStatusTypes('<?php echo $token ?>', document.getElementById('statusFilter'))">
                     </div>
+                    <label for="statusFilter" class="form-label">Status Options</label>
+                    <select id="statusFilter" class="form-select" name='statusFilter'>
+
+                    </select>
                 </li>
             </ul>
         </div>

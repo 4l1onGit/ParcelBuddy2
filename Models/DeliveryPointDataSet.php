@@ -271,10 +271,10 @@ class DeliveryPointDataSet //Used for handling DeliveryPoint data
             }
             if (isset($data['status'])) {
                 if ($paramCount > 0) {
-                    $sqlQuery .= ' OR ';
+                    $sqlQuery .= ' AND ';
                 }
-                $sqlQuery .= 'status_code LIKE ?';
-                $params[$paramCount] = $data['status'];
+                $sqlQuery .= 'status_code = ?';
+                $params[$paramCount] = intval($data['status']);
                 $paramCount++;
             }
 

@@ -38,7 +38,9 @@ class AjaxController{
             const statusCheckBox = document.getElementById('statusCheckbox');
             let suggestions = [];
             let delivererFilter = document.getElementById('delivererFilter');
+            let statusFilter = document.getElementById('statusFilter');
             let delivererId = null;
+            let statusId = null;
             let searchQuery = `ajaxController.php?q=search&search=${search}&page=${page}&token=${token}`
             if (idCheckbox.checked || nameCheckbox.checked || addressOneCheckBox.checked || addressTwoCheckBox.checked || postcodeCheckBox.checked || delivererCheckBox.checked || statusCheckBox.checked || latCheckBox.checked || lngCheckBox.checked) {
                 let filters = [];
@@ -70,18 +72,21 @@ class AjaxController{
                 }
                 if(statusCheckBox.checked) {
                     filters.push('status');
+                    statusId = statusFilter.value;
                 }
 
                 searchQuery = `ajaxController.php?q=search&search=${search}&page=${page}&filters=${JSON.stringify(filters)}&token=${token}`
                 if(delivererId !== null) {
-                    searchQuery += `&id=${delivererId}`;
+                    searchQuery += `&delivererId=${delivererId}`;
+                }
+                if(statusId !== null) {
+                    searchQuery += `&statusId=${statusId}`;
                 }
 
             }
             fetch(searchQuery, {method: "GET"}).then(async (res) => {
                 return JSON.parse(await res.text());
             }).then((data) => {
-                console.log(data);
                 let searchSuggestions = data;
                 uic.innerHTML = "";
 
@@ -108,9 +113,9 @@ class AjaxController{
 
         }
     }
-    deleteBtn(id) { //Used to set delete function to the delete button on the modal
+    deleteBtn(id, token) { //Used to set delete function to the delete button on the modal
         let delBtn = document.getElementById('deleteBtn')
-        delBtn.onclick = () => {this.deleteRecord(id)};
+        delBtn.onclick = () => {this.deleteRecord(id, token)};
 
     }
     getDeliveries(page = 1, token, view = 'desktop') { //Used to fetch deliveries
@@ -127,25 +132,25 @@ class AjaxController{
                 let uic = document.getElementById("recordsDesktop");
                 uic.innerHTML = '';
                 data.forEach((deliveryPoint) => {
-                    uic.innerHTML += `<tr onclick="set_position(${deliveryPoint.lat}, ${deliveryPoint.lng})"><td>${deliveryPoint.id}</td><td>${deliveryPoint.name}</td> <td>${deliveryPoint.addressOne}  ${deliveryPoint.addressTwo}<br>Postcode: ${deliveryPoint.postcode}<br> Lat/Lng: ${deliveryPoint.lat}, ${deliveryPoint.lng}</td> <td>${deliveryPoint.username}</td> <td>${deliveryPoint.status}</td><td><img src='Images/${deliveryPoint.photo}' height='75px' width='75px'></td> <td><a id='qrcode${deliveryPoint.id}' href=/record.php?id='${deliveryPoint.id}'></a></td><td ><div class="d-flex flex-column"><button class="btn btn-danger mb-1" data-bs-toggle="modal" data-bs-target="#deleteModal" onclick="ajaxController.deleteBtn(${deliveryPoint.id})"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                    uic.innerHTML += `<tr onclick="set_position(${deliveryPoint.lat}, ${deliveryPoint.lng})"><td>${deliveryPoint.id}</td><td>${deliveryPoint.name}</td> <td>${deliveryPoint.addressOne}  ${deliveryPoint.addressTwo}<br>Postcode: ${deliveryPoint.postcode}<br> Lat/Lng: ${deliveryPoint.lat}, ${deliveryPoint.lng}</td> <td>${deliveryPoint.username}</td> <td>${deliveryPoint.status}</td><td><img src='Images/${deliveryPoint.photo}' height='75px' width='75px'></td> <td><a id='qrcode${deliveryPoint.id}' href=/record.php?id='${deliveryPoint.id}'></a></td><td ><div class="d-flex flex-column"><button class="btn btn-danger mb-1" data-bs-toggle="modal" data-bs-target="#deleteModal" onclick="ajaxController.deleteBtn(${deliveryPoint.id}, '${token}')"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
   <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"/>
 </svg></button><button type="button" data-bs-toggle="modal" data-bs-target="#recordModal" onclick="ajaxController.getRecord(${deliveryPoint.id}, '${token}')" class="btn btn-primary mt-1"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
   <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
   <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
 </svg></button></div></td></tr>`;
-                    createLocation(deliveryPoint.lat, deliveryPoint.lng, `Name: ${deliveryPoint.name}`  , `${deliveryPoint.photo}`);
+                    createLocation(deliveryPoint.name, deliveryPoint.lat, deliveryPoint.lng, deliveryPoint.id);
                 })
             } else {
                 let uic = document.getElementById("recordsMobile");
                 uic.innerHTML = '';
                 data.forEach((deliveryPoint) => {
-                    uic.innerHTML += `<tr onclick="set_position(${deliveryPoint.lat}, ${deliveryPoint.lng})"><td><div><ul class="list-group"><li>Name: ${deliveryPoint.name}</li><li>Address: ${deliveryPoint.addressOne} ${deliveryPoint.addressTwo} ${deliveryPoint.addressTwo}</li><li>Postcode: ${deliveryPoint.postcode}</li><li>Lat/Lng: ${deliveryPoint.lat}/${deliveryPoint.lng}</li> <li class="list-item" id='qrcode${deliveryPoint.id}'></li></div></td><td><div class="d-flex flex-column"><button class="btn btn-danger mb-1" data-bs-toggle="modal" data-bs-target="#deleteModal" onclick="ajaxController.deleteBtn(${deliveryPoint.id})"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                    uic.innerHTML += `<tr onclick="set_position(${deliveryPoint.lat}, ${deliveryPoint.lng})"><td><div><ul class="list-group"><li class="list-group-item">Name: ${deliveryPoint.name}</li><li class="list-group-item">Address: ${deliveryPoint.addressOne} ${deliveryPoint.addressTwo} ${deliveryPoint.addressTwo}</li><li class="list-group-item">Postcode: ${deliveryPoint.postcode}</li><li class="list-group-item">Lat/Lng: ${deliveryPoint.lat}/${deliveryPoint.lng}</li><li class="list-group-item">Status: ${deliveryPoint.status}</li>  <li class="list-group-item" id='qrcode${deliveryPoint.id}'></li></div></td><td><div class="d-flex flex-column"><button class="btn btn-danger mb-1" data-bs-toggle="modal" data-bs-target="#deleteModal" onclick="ajaxController.deleteBtn(${deliveryPoint.id})"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
   <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"/>
 </svg></button><button type="button" data-bs-toggle="modal" data-bs-target="#recordModal" onclick="ajaxController.getRecord(${deliveryPoint.id}, '${token}')" class="btn btn-primary mt-1"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
   <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
   <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
 </svg></button></div></td></td><td><img src='Images/${deliveryPoint.photo}' height='75px' width='75px'></td></tr>`
-                    createLocation(deliveryPoint.lat, deliveryPoint.lng, `Name: ${deliveryPoint.name}`  , `${deliveryPoint.photo}`);
+                    createLocation(deliveryPoint.name, deliveryPoint.lat, deliveryPoint.lng, deliveryPoint.id, token);
                 })
             }
             data.forEach((deliveryPoint) => {
@@ -384,7 +389,6 @@ class AjaxController{
             fetch(`ajaxController.php?q=updateRecord&data=${data}&token=${token}`, {method: 'post'}).then(async (res) => {
                 return JSON.parse(await res.text());
             }).then((data) => {
-                console.log(data, this.currentView);
                 this.getDeliveries(this.currentPage, token, this.currentView);})
                 .catch((err) => {
                     console.log(err);
@@ -394,7 +398,6 @@ class AjaxController{
 
     async setDeliverers(token, element = this.recordDeliverer) {
         let deliverers = await this.getDeliverers(token);
-        console.log(deliverers);
         element.innerHTML = '';
         deliverers.forEach((deliver) => {
 
@@ -402,11 +405,11 @@ class AjaxController{
         })
     }
 
-    async setStatusTypes(token) {
+    async setStatusTypes(token,element = this.recordStatus) {
         let statusTypes = await this.getStatusTypes(token);
-        this.recordStatus.innerHTML = '';
+        element.innerHTML = '';
         statusTypes.forEach((status) => {
-            this.recordStatus.innerHTML += `<option value="${status.statusCode}">${status.statusText}</option>`
+            element.innerHTML += `<option value="${status.statusCode}">${status.statusText}</option>`
         })
     }
 
@@ -428,7 +431,7 @@ class AjaxController{
 
     async createRecord(token) {
         console.log('hi');
-        const confirmCreate = document.getElementById('confirmCreate');
+        const confirmCreate = document.getElementById('confirmRecord');
 
         let newFormData = new recordFormData();
 
@@ -465,7 +468,6 @@ class AjaxController{
             fetch(`ajaxController.php?q=createRecord&data=${data}&token=${token}`, {method: 'post'}).then(async (res) => {
                 return JSON.parse(await res.text());
             }).then((data) => {
-                console.log(data)
                 this.getDeliveries(this.currentPage, token, this.currentView);
             })
                 .catch((err) => {
@@ -477,7 +479,9 @@ class AjaxController{
     deleteRecord(id, token) { //Used to delete records
         fetch(`ajaxController.php?q=delete&id=${id}&token=${token}`, {method: 'post'}).then(async (res) => {
             return JSON.parse(await res.text());
-        }).then((data) => {this.getDeliveries(this.currentPage), token, this.currentView}
+        }).then((data) => {
+                this.getDeliveries(this.currentPage, token, this.currentView);
+        }
 
         ).catch((err) => {console.log(err);})
     }
