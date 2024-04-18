@@ -59,8 +59,15 @@ if(isset($_SESSION['login'])) { //Makes sure the user is logged in before any of
 
     if($q === "updateRecord" && ($_REQUEST['token'] === $_SESSION['ajaxToken'])) { //Used to update the record with provided data
         $data = json_decode($_REQUEST['data'], 1);
-        $deliveryPointData = $deliveryPointDataSet->updateDeliveryPoint($data);
-        echo json_encode($deliveryPointData);
+        if((strtolower($_SESSION['login']->getUserType()) === 'manager') || (intval($_SESSION['login']->getId()) == intval($data['_deliverer']))) {
+            $deliveryPointData = $deliveryPointDataSet->updateDeliveryPoint($data);
+            echo json_encode($deliveryPointData);
+        }
+        else {
+            echo json_encode(strtolower($_SESSION['login']->getId()) );
+        }
+
+
     }
 
     if($q === "createRecord" && ($_REQUEST['token'] === $_SESSION['ajaxToken'])) {
@@ -74,20 +81,28 @@ if(isset($_SESSION['login'])) { //Makes sure the user is logged in before any of
     if ($q === "search" && ($_REQUEST['token'] === $_SESSION['ajaxToken'])) { //Used for the live search functionality
         $currentPage = $_REQUEST['page'] ?? 1; //Sets page to current page number
         $search = $_REQUEST['search'];
-
+        $delivererId = $_REQUEST['id'] ?? null;
         if(isset($_REQUEST['filters']))
         {
             $data=[];
             $filters = json_decode($_REQUEST['filters']);
-
             foreach($filters as $filter) {
                 $data[$filter] = $search;
             }
-
-            $deliveryPointData = $deliveryPointDataSet->fetchFilteredDeliveries($data);
+            $id = null;
+            if(strtolower($_SESSION['login']->getUserType()) !== 'manager') {
+                $id = $_SESSION['login']->getId();
+            } else if(isset($delivererId)) {
+                $id = $delivererId;
+        }
+            $deliveryPointData = $deliveryPointDataSet->fetchFilteredDeliveries($data, $id);
 
         } else {
-            $deliveryPointData = $deliveryPointDataSet->fetchSearchDeliveries($search);
+            $id = null;
+            if($_SESSION['login']->getUserType() !== 'manager') {
+                $id === $_SESSION['login']->getId();
+            }
+            $deliveryPointData = $deliveryPointDataSet->fetchSearchDeliveries($search, $id);
         }
 
         $searchResultPerPage = 5;
@@ -115,7 +130,7 @@ if(isset($_SESSION['login'])) { //Makes sure the user is logged in before any of
         }
         echo json_encode($statusTypes);
     }
-    if($q === 'deliverers' && ($_REQUEST['token'] === $_SESSION['ajaxToken'])) { //Used to fetch the deliverers making it easier to assign deliverers to different deliveries
+    if($q === 'deliverers' && ($_REQUEST['token'] === $_SESSION['ajaxToken']) && strtolower($_SESSION['login']->getUserType()) === 'manager') { //Used to fetch the deliverers making it easier to assign deliverers to different deliveries
         $usersDataSet = new UserDataSet();
         $usersData = $usersDataSet->fetchAllUsers();
         $users = [];
@@ -123,8 +138,8 @@ if(isset($_SESSION['login'])) { //Makes sure the user is logged in before any of
             $users[] = array("id" => $user->getUserID(),"username" => $user->getUsername());
         }
         echo json_encode($users);
-    }
 
+    }
     if($q === 'delete' && $_REQUEST['id'] && (strtolower($_SESSION['login']->getUserType())) === 'manager') { //Used to delete records but must be a manager to do so
         $deliveryPointData = $deliveryPointDataSet->deleteDeliveryPoint($_REQUEST['id']);
         echo json_encode($deliveryPointData);

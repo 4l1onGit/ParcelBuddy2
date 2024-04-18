@@ -17,7 +17,8 @@
                 </ul>
             </div>
             <form class="modal-footer" method="post">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal" onclick="ajaxController.setUpCreateForm()">Create Record</button>
+                <?php if(strtolower($_SESSION['login']->getUserType()) === 'manager') {  ?>
+                <?php echo '<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#recordModal" onclick="ajaxController.setUpCreateForm(' . $token .')">Create Record</button>'; }?>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="submit" class="btn btn-danger" id="logout" value="logout" name="logoutbutton">Sign Out</button>
             </form>

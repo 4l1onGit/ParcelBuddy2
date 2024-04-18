@@ -176,8 +176,12 @@
                 <li class="list-group-item">
                     <div>
                         <label class="form-label" for="delivererCheckbox">Deliverer</label>
-                        <input type="checkbox" name="delivererCheckbox" id="delivererCheckbox">
+                        <input type="checkbox" name="delivererCheckbox" id="delivererCheckbox" onclick="ajaxController.setDeliverers('<?php echo $token ?>', document.getElementById('delivererFilter'))">
                     </div>
+                    <label for="delivererFilter" class="form-label">Deliverer Options</label>
+                    <select id="delivererFilter" class="form-select" name='delivererFilter'>
+
+                    </select>
                 </li>
                 <li class="list-group-item">
                     <div>

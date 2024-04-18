@@ -136,14 +136,14 @@ class DeliveryPointDataSet //Used for handling DeliveryPoint data
                 $params[$paramCount] = $data['_status'];
                 $paramCount++;
             }
-//            if (isset($data['del_photo']) ) { To be implemented
-//                if($paramCount > 0) {
-//                    $sqlQuery.=' ';
-//                }
-//                $sqlQuery .= 'Del_Photo = ?,';
-//                $params[$paramCount] = $data['del_photo'];
-//                $paramCount++;
-//            }
+            if (isset($data['del_photo']) ) {
+                if($paramCount > 0) {
+                    $sqlQuery.=' ';
+               }
+                $sqlQuery .= 'Del_Photo = ?,';
+              $params[$paramCount] = $data['del_photo'];
+               $paramCount++;
+            }
             if($paramCount > 0) {
                 $sqlQuery = rtrim($sqlQuery, ',');
             }
@@ -156,6 +156,7 @@ class DeliveryPointDataSet //Used for handling DeliveryPoint data
                 $statement->bindValue($i + 1, $params[$i]);
             }
             $statement->bindValue(++$paramCount, $data['_id']);
+
             return $statement->execute();
         } catch (Exception $ex) {
             return false;
@@ -175,11 +176,23 @@ class DeliveryPointDataSet //Used for handling DeliveryPoint data
 
 
 
-    public function fetchSearchDeliveries(string $q) : array {
+    public function fetchSearchDeliveries(string $q, $id) : array {
         $q = "$q%";
-        $sqlQuery = 'SELECT * FROM delivery_point  INNER JOIN delivery_users ON delivery_point.Deliverer = delivery_users.UserID INNER JOIN delivery_status ON delivery_point.Status = delivery_status.status_code WHERE delivery_point.Name LIKE ?'; //prepare Sql query
+        if($id === '') {
+            $sqlQuery = 'SELECT * FROM delivery_point  INNER JOIN delivery_users ON delivery_point.Deliverer = delivery_users.UserID INNER JOIN delivery_status ON delivery_point.Status = delivery_status.status_code WHERE delivery_point.Name LIKE ?'; //prepare Sql query
+        } else {
+            $sqlQuery = 'SELECT * FROM delivery_point  INNER JOIN delivery_users ON delivery_point.Deliverer = delivery_users.UserID INNER JOIN delivery_status ON delivery_point.Status = delivery_status.status_code WHERE delivery_point.Name LIKE ? AND delivery_point.Deliverer = ?'; //prepare Sql query
+        }
+
+
+
         $statement = $this->_dbHandle->prepare($sqlQuery);
-        $statement->bindValue(1, $q);
+        if($id === '') {
+            $statement->bindValue(1, $q);
+        } else {
+            $statement->bindValue(1, "%$q%");
+            $statement->bindValue(2, $id);
+        }
         $statement->execute();
         $dataSet = [];
         while ($row = $statement->fetch()) {
@@ -198,7 +211,7 @@ class DeliveryPointDataSet //Used for handling DeliveryPoint data
 
             if (isset($data['id'])) { //Applies parameters to query based on the filters applied
                 $sqlQuery .= 'ID = ?';
-                $params[$paramCount] = $data['id'];
+                $params[$paramCount] = intval($data['id']);
                 $paramCount++;
             }
             if (isset($data['name'])) {
@@ -273,9 +286,9 @@ class DeliveryPointDataSet //Used for handling DeliveryPoint data
                 if ($paramCount > 0) {
                     $sqlQuery .= ' AND ';
                 }
-                $sqlQuery .= 'Deliverer LIKE ?';
+                $sqlQuery .= 'Deliverer = ?';
 
-                $params[$paramCount] = $data['deliverer'] ?? $id;
+                $params[$paramCount] = $id ?? intval($data['deliverer']);
                 $paramCount++;
                 str_replace('OR', 'AND', $sqlQuery);
             }
@@ -284,7 +297,11 @@ class DeliveryPointDataSet //Used for handling DeliveryPoint data
 
 
            for( $i = 0; $i < $paramCount; $i++) { //Loops through the amount of parameters set to bind values to prevent SQL injection
-                $statement->bindValue($i + 1, '%'.$params[$i].'%');
+               if(is_int($params[$i]) || is_float($params[$i])) {
+                   $statement->bindValue($i+1, $params[$i]);
+               } else {
+                   $statement->bindValue($i + 1, '%'.$params[$i].'%');
+               }
             }
 
             $statement->execute();

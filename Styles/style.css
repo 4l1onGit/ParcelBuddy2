@@ -88,6 +88,10 @@ body {
   z-index: 100;
 }
 
+.suggestions {
+  position: relative;
+}
+
 .pagination--active {
   background-color: var(--colour-tertiary);
   color: white;

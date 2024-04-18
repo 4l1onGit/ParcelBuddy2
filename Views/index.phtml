@@ -9,11 +9,11 @@
         </ul>
     </nav>
     <div class="row">
-        <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+        <div class="modal fade" id="recordModal" tabindex="-1" aria-labelledby="recordModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="form-label">Create Record</h4>
+                        <h4 class="form-label" id="recordID"></h4>
                     </div>
                     <div class="modal-body p-4 rounded-2">
                         <div class="mb-3">
@@ -51,22 +51,26 @@
                             <select class="form-select" id="recordStatus" name="recordStatus">
                             </select>
                         </div>
+                        <div class="mb-3">
+                            <label for="recordPhoto" class="form-label">Photo</label>
+                            <input class="form-control" type="file" id="recordPhoto" name="recordPhoto">
 
+                        </div>
                         <div class="form-check">
-                            <input class="form-check-input" name="confirmCreate" type="checkbox" id="confirmCreate">
-                            <label class="form-check-label" for="confirmCreate">
+                            <input class="form-check-input" name="confirmRecord" type="checkbox" id="confirmRecord">
+                            <label class="form-check-label" for="confirmRecord">
                                 Confirm
                             </label>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-primary" id="create" value="create" name="createbutton" onclick="ajaxController.createRecord('<?php echo $token ?>')" data-bs-dismiss="modal">Create</button>
+                        <button class="btn btn-primary" id="recordButton" value="record" name="recordButton" data-bs-dismiss="modal"></button>
                     </div>
                 </div>
             </div>
         </div>
         <!-- Desktop view -->
-        <div class="col-md-6 d-none d-md-block d-lg-block">
+        <div class="col-md-6 d-none d-md-block d-lg-block" id="desktop">
             <table class="table table-hover">
                 <thead>
                     <th>ID</th>
@@ -88,7 +92,7 @@
             </table>
         </div>
         <!--Mobile View -->
-        <div class="col-sm-12 d-md-none d-lg-none">
+        <div class="col-sm-12 d-md-none d-lg-none" id="mobile">
             <table class="table table-hover">
                 <thead>
                 <th>Details</th>
@@ -98,7 +102,7 @@
                 <tbody id="recordsMobile">
                 <script>
                     window.addEventListener("load", (event) => {
-                        ajaxController.getDeliveries(1,'<?php echo $token ?>', 'mobile');
+                        ajaxController.getDeliveries(1,'<?php echo $token ?>');
                     })
                 </script>
                 </tbody>
@@ -107,14 +111,14 @@
 
 
         <!--Desktop view -->
-        <div class="col-md-6 d-flex flex-column justify-content-center align-items-center">
+        <div class="col-md-6 d-flex flex-column justify-content-center align-items-center d-none d-md-block d-lg-block">
             <div class="" id="map"  style="width: 100%; height: 1000px">
 
             </div>
 
         </div>
         <!-- Mobile View -->
-        <div class="col-sm-12 d-flex flex-column justify-content-center align-items-center">
+        <div class="col-sm-12 d-flex flex-column justify-content-center align-items-center d-md-none d-lg-none">
             <div class="" id="map"  style="width: 100%; height: 50vh">
 
             </div>
@@ -123,59 +127,6 @@
     </div>
 </div>
 
-
-    <div class="modal fade" id="recordModal" tabindex="-1" aria-labelledby="recordModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="form-label" id="recordID"></h4>
-                </div>
-                <div class="modal-body p-4 rounded-2">
-                    <div class="mb-3">
-                        <label for="recordName" class="form-label">Name</label>
-                        <input type="text" class="form-control" id="recordName" name="recordName">
-                    </div>
-                    <div class="mb-3">
-                        <label for="recordAddressOne" class="form-label">Address One</label>
-                        <input type="text" class="form-control" id="recordAddressOne" name="recordAddressOne">
-                    </div>
-                    <div class="mb-3">
-                        <label for="recordAddressTwo" class="form-label">Address Two</label>
-                        <input type="text" class="form-control" id="recordAddressTwo" name="recordAddressTwo">
-                    </div>
-                    <div class="mb-3">
-                        <label for="recordPostcode" class="form-label">Postcode</label>
-                        <input type="text" class="form-control" id="recordPostcode" name="recordPostcode">
-                    </div>
-                    <div class="mb-3">
-                        <label for="recordDeliverer" class="form-label">Deliverer</label>
-                        <select id="recordDeliverer" class="form-select" name='recordDeliverer'>
-
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="recordStatus" class="form-label">Status</label>
-                        <select class="form-select" id="recordStatus" name="recordStatus">
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="recordPhoto" class="form-label">Photo</label>
-                        <input type="file" class="form-control" id="recordPhoto" name="recordPhoto">
-                    </div>
-
-                    <div class="form-check">
-                        <input class="form-check-input" name="confirmEdit" type="checkbox" id="confirmEdit">
-                        <label class="form-check-label" for="confirmEdit">
-                            Confirm
-                        </label>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-primary" id="edit" value="edit" name="editbutton" onclick="ajaxController.editRecord('<?php echo $token ?>')" data-bs-dismiss="modal">Edit</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
         <div class="modal-dialog">
